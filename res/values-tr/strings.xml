@@ -38,7 +38,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
   <string name="dsp_settings_headset">Ses Ayarları - Kulaklık</string>
   <string name="dsp_settings_speaker">Ses Ayarları - Telefon Hoparlörü</string>
   <string name="dsp_settings_bluetooth">Ses Ayarları - Bluetooth Aygıtı</string>
-  <string name="dsp_settings_wm8994">Ses Ayarları - WM8994</string>
   <string name="pref_dsp_title">Dinamik Dizi Sıkıştırması</string>
   <string name="pref_dsp_summary_on">Sıkıştırma etkin</string>
   <string name="pref_dsp_summary_off">Sıkıştırma etkin değil</string>
@@ -76,49 +75,9 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
   <string name="eq_preset_treble_reducer">Tiz Azaltıcı</string>
   <string name="eq_preset_vocal_booster">Ses Yükseltici</string>
   <string name="eq_preset_custom">Özel</string>
-  <!-- WM8994 -->
-  <!-- Categories -->
-  <string name="category_wm8994_internal_speaker">Hoparlör</string>
-  <string name="category_wm8994_signal_processing">Sinyal İşleme</string>
-  <string name="category_wm8994_headphone_amp">Kulaklık</string>
-  <string name="category_wm8994_codec_optimization">Codec Optimizasyonu</string>
-  <string name="category_wm8994_dac_config">Dijital/Analog Dönüştürücü Ayarları</string>
-  <string name="category_wm8994_analog_path">Analog Kanal Yapılandırması</string>
-  <string name="category_wm8994_mic_settings">Mikrofon Ayarları</string>
-  <string name="category_wm8994_microphone_recording">Mikrofon</string>
-  <!-- Titles/Summaries -->
-  <string name="pref_wm8994_microphone_recording_title">Kaydetme önayarı</string>
-  <string name="pref_wm8994_headphone_amp_title">Yükseltici seviyesi</string>
-  <string name="pref_wm8994_headphone_amp_summary">Analog yükselticiyi özelleştir</string>
-  <string name="pref_wm8994_headphone_amp_dlg_title">Kulaklık yükseltici seviyesi</string>
-  <string name="pref_wm8994_headphone_amp_dlg_desc">Analog yükseltici</string>
-  <string name="pref_wm8994_bass_boost_enable_title">Bas yükseltici</string>
-  <string name="pref_wm8994_bass_boost_enable_summary">Bas yükseltme için gelişmiş ayarlar</string>
-  <string name="pref_wm8994_bass_boost_title">Bas yükseltme aralığı</string>
-  <string name="pref_wm8994_bass_boost_summary">Gelişmiş dinamik dizi yönetimi</string>
-  <string name="pref_wm8994_bass_boost_preset_title">Bas yükseltici önayarı</string>
-  <string name="pref_wm8994_bass_boost_dlg_title">Bas yükseltici</string>
-  <string name="pref_wm8994_bass_boost_gain_dlg_desc">Yükselt</string>
-  <string name="pref_wm8994_bass_boost_range_dlg_desc">Bas yükseltme aralığı</string>
-  <string name="pref_wm8994_control_enable_title">WM8994 Etkinleştir</string>
-  <string name="pref_wm8994_control_enable_summary">WM8994 ses işlemcisinin gelişmiş ayarları</string>
-  <string name="pref_wm8994_speaker_tuning_title">Müzik için ayarla</string>
-  <string name="pref_wm8994_speaker_tuning_summary">Daha fazla bas ve dengeli ses için donanım EQ ayarla</string>
-  <string name="pref_wm8994_mono_downmix_title">Mono çevrimi</string>
-  <string name="pref_wm8994_mono_downmix_summary">Stereo sesi monoya çevir (kulaklık gibi stereo çıkışlar içindir)</string>
-  <string name="pref_wm8994_stereo_expansion_title">Stereo genişlet</string>
-  <string name="pref_wm8994_stereo_expansion_summary">Dijital sinyal işleyicisi ile stereo sesi “Genişlet”</string>
-  <string name="pref_wm8994_dac_direct_title">D/AC direct</string>
-  <string name="pref_wm8994_dac_direct_summary">Kanal karıştırıcıyı es geçip direkt dijital/analog dönüştürücüye eriş. Daha temiz ses üretir (daha düşük sinyal-gürültü oranı)</string>
-  <string name="pref_wm8994_dac_osr128_title">Hi-fi yürütme</string>
-  <string name="pref_wm8994_dac_osr128_summary">128x örnekleme ile dijitalden-analoga dönüştürücü — müzik çalarken daha temiz ses</string>
-  <string name="pref_wm8994_adc_osr128_title">Hi-fi kaydetme</string>
-  <string name="pref_wm8994_adc_osr128_summary">128x örnekleme ile analogdan-dijitale dönüştürücü — kaydedilen seslerin kalitesini arttırır</string>
-  <string name="pref_wm8994_fll_tuning_title">Ayarlı ses frekansı</string>
-  <string name="pref_wm8994_fll_tuning_summary">Ayarlı WM8994 ses frekans kaynağını kullan — sesin kalitesini arttırır</string>
   <string name="save_preset">Önayarı kaydet</string>
   <string name="load_preset">Önayarı yükle</string>
-  <string name="new_preset">Yeni hazır ayar...</string>
+  <string name="new_preset">Yeni hazır ayar…</string>
   <string name="help_title">Yardım</string>
   <string name="help_text"><b>DSP Manager nedir?</b>
 \n\n
@@ -158,60 +117,10 @@ Kompanzasyon, kullanıcının seçtiği ayarlamalara eklenir. Sadece kompanzasyo
 Kulaklıklı mikroişlemci filtresi, ünlü bs2b analog devresinden esinlenerek tasarlanmış çapraz beslemeli bir tasarımdır. Etki, mono sesi değişmeden ilerler ve fark sinyalini, kullanıcının kulakları için doğru psikoakustik ipuçları veren, aynı anda hem baştaki gölgeye hem de interaural gecikmeye yaklaşan bir alçak geçiren filtreden geçirerek ayarlar. Niyet, tüm kulaklık setleri ile doğasında bulunan inanılmaz stereo ayrımından kaynaklanan dinleyici yorgunluğunu önlemektir. Bu efekt stereo kulaklık kullanıldığında etkinleştirilmelidir.
 \n\n
 Karışım stereo ayırmayı biraz azalttığından, algılanan stereo görüntü genişliğini arttırmak için kullanılabilen bir Haas efektli yankı vardır. Bu, \'Oda tipi\' kontrolü tarafından kontrol edilir.</string>
-  <!-- Sound Control -->
-  <string name="soundcontrol_title">Ses Kontrolü</string>
-  <!-- Preferences -->
-  <string name="pref_soundcontrol_presets_title">Ses kontrolü hazır ayarları</string>
-  <string name="pref_soundcontrol_headphone_gain_title">Kulaklık kazancı</string>
-  <string name="pref_soundcontrol_headphone_poweramp_gain_title">Kulaklık PowerAmp kazanç</string>
-  <string name="pref_soundcontrol_microphone_gain_title">Mikrofon kazancı</string>
-  <string name="pref_soundcontrol_speaker_gain_title">Hoparlör kazancı</string>
-  <string name="pref_soundcontrol_headphone_gain_left">Kulaklık (Sol)</string>
-  <string name="pref_soundcontrol_headphone_gain_right">Kulaklık (Sağ)</string>
-  <string name="pref_soundcontrol_headphone_poweramp_gain_left">Kulaklık PowerAmp (sol)</string>
-  <string name="pref_soundcontrol_headphone_poweramp_gain_right">Kulaklık PowerAmp (sağ)</string>
-  <string name="pref_soundcontrol_microphone_handset_gain_title">Kulaklık mikrofonu</string>
-  <string name="pref_soundcontrol_microphone_camcorder_gain_title">Video kamera mikrofonu</string>
-  <string name="sc_version_title">Ses Kontrolü</string>
-  <string name="sc_preset_summary">Yüklemek için bir hazır ayar seçin</string>
-  <string name="sc_preset_loaded">Önceden ayarlanmış \"%s\" yüklendi!</string>
-  <string name="sc_preset_custom">Özel</string>
-  <string name="sc_preset_quality">Kalite</string>
-  <string name="sc_preset_loudness">Yüksek ses</string>
-  <string name="sc_preset_quiet">Sessiz</string>
-  <string name="sc_preset_stock">Stok</string>
-  <string name="sc_value_changed">Lütfen ayarların etkin olması için müziği durdurup tekrar devam edin!</string>
   <!-- Drawer -->
   <string name="navigation_drawer_toggle">Menüyü aç/kapat</string>
   <string name="navigation_drawer_open">Gezinti menüsünü aç</string>
   <string name="navigation_drawer_close">Gezinti menüsünü kapat</string>
   <string name="navigation_toggle_drawer">Menüye Geç</string>
   <string name="navigation_toggle_tabbed">Sekmeliye Geç</string>
-  <!-- Boeffla Sound Control -->
-  <string name="boeffla_sound_control">Boeffla ses kontrol</string>
-  <string name="boeffla_sound_title">Boeffla Ses</string>
-  <string name="boeffla_sound_summary">Boeffla Ses etkinleştir</string>
-  <string name="bass_freq_tuning">Bass frekans ayarı</string>
-  <string name="dac_direct_summary">Analog kanal kaldır</string>
-  <string name="dac_direct_title">DAC doğrudan</string>
-  <string name="dac_oversampling_summary">128x örnekleme</string>
-  <string name="dac_oversampling_title">DAC örnekleme</string>
-  <string name="fll_tuning_summary">Çip saatini daha iyi kalite için ayarla</string>
-  <string name="fll_tuning_title">FLL Ayarı</string>
-  <string name="general_title">Genel</string>
-  <string name="headphone_title">Kulaklık</string>
-  <string name="mic_title">Mikrofon</string>
-  <string name="mic_call">Gelen çağrı ses düzeyi</string>
-  <string name="mic_general">Genel ses</string>
-  <string name="mono_downmix_summary">Stereo sesi mono sese çevir</string>
-  <string name="mono_downmix_title">Mono çevrimi</string>
-  <string name="over_saturation_suppress">Aşırı canlılığı önleme</string>
-  <string name="privacy_mode_summary">Kulaklık takılı iken telefonun hoparlörü sessiz</string>
-  <string name="privacy_mode_title">Gizlilik modu</string>
-  <string name="speaker_tuning_summary">Telefon hoparlörünü daha iyi bas için ayarla</string>
-  <string name="speaker_tuning_title">Hoparlör ayarlama</string>
-  <string name="speaker_volume_title">Hoparlör sesi</string>
-  <string name="stereo_expansion_summary">Ses derinliğini ve netliğini geliştir</string>
-  <string name="stereo_expansion_title">Stereo genişletme</string>
-  <string name="volumes_title">Ses Düzeyleri</string>
 </resources>

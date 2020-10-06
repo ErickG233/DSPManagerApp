@@ -38,7 +38,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
   <string name="dsp_settings_headset">DSP-instellingen - Headset</string>
   <string name="dsp_settings_speaker">DSP-instellingen - Telefoonspeaker</string>
   <string name="dsp_settings_bluetooth">DSP-instellingen - Bluetoothapparaat</string>
-  <string name="dsp_settings_wm8994">DSP-instellingen - WM8994</string>
   <string name="pref_dsp_title">Dynamisch bereikcompressie</string>
   <string name="pref_dsp_summary_on">Dynamisch bereikcompressie ingeschakeld</string>
   <string name="pref_dsp_summary_off">Dynamisch bereikcompressie uitgeschakeld</string>
@@ -76,49 +75,9 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
   <string name="eq_preset_treble_reducer">Hoge tonenverzwakker</string>
   <string name="eq_preset_vocal_booster">Stemversterker</string>
   <string name="eq_preset_custom">Aangepast</string>
-  <!-- WM8994 -->
-  <!-- Categories -->
-  <string name="category_wm8994_internal_speaker">Speaker</string>
-  <string name="category_wm8994_signal_processing">Signaalverwerking</string>
-  <string name="category_wm8994_headphone_amp">Headset</string>
-  <string name="category_wm8994_codec_optimization">Codecoptimalisatie</string>
-  <string name="category_wm8994_dac_config">Digitaal/analoog-conversie-instellingen</string>
-  <string name="category_wm8994_analog_path">Analoge padenconfiguratie</string>
-  <string name="category_wm8994_mic_settings">Microfooninstellingen</string>
-  <string name="category_wm8994_microphone_recording">Microfoon</string>
-  <!-- Titles/Summaries -->
-  <string name="pref_wm8994_microphone_recording_title">Preset voor opnemen</string>
-  <string name="pref_wm8994_headphone_amp_title">Versterkerniveau</string>
-  <string name="pref_wm8994_headphone_amp_summary">Analoge gain wijzigen</string>
-  <string name="pref_wm8994_headphone_amp_dlg_title">Headsetversterkerniveau</string>
-  <string name="pref_wm8994_headphone_amp_dlg_desc">Analoge gain</string>
-  <string name="pref_wm8994_bass_boost_enable_title">Basversterker</string>
-  <string name="pref_wm8994_bass_boost_enable_summary">Geavanceerd beheer van basversterker</string>
-  <string name="pref_wm8994_bass_boost_title">Bereik basversterker</string>
-  <string name="pref_wm8994_bass_boost_summary">Geavanceerd beheer van dynamisch bereik</string>
-  <string name="pref_wm8994_bass_boost_preset_title">Preset voor basversterker</string>
-  <string name="pref_wm8994_bass_boost_dlg_title">Basversterker</string>
-  <string name="pref_wm8994_bass_boost_gain_dlg_desc">Gain</string>
-  <string name="pref_wm8994_bass_boost_range_dlg_desc">Bereik van basversterker</string>
-  <string name="pref_wm8994_control_enable_title">WM8994-beheer inschakelen</string>
-  <string name="pref_wm8994_control_enable_summary">Geavanceerde instellingen voor de WM8994-geluidsprocessor</string>
-  <string name="pref_wm8994_speaker_tuning_title">Muziektoon</string>
-  <string name="pref_wm8994_speaker_tuning_summary">Hardware-EQ herconfigureren voor meer bas en een evenwichtig klankbeeld</string>
-  <string name="pref_wm8994_mono_downmix_title">Downmixen naar mono</string>
-  <string name="pref_wm8994_mono_downmix_summary">Stereo- naar monogeluid downmixen (voor stereo-uitvoer, zoals headsets)</string>
-  <string name="pref_wm8994_stereo_expansion_title">Stereo-uitbreiding</string>
-  <string name="pref_wm8994_stereo_expansion_summary">Stereogeluid \'uitbreiden\u2019 d.m.v. digitale geluidsverwerking</string>
-  <string name="pref_wm8994_dac_direct_title">Directe digitaal/analoog-omzetter</string>
-  <string name="pref_wm8994_dac_direct_summary">Direct toegang verkrijgen tot de digitaal/analoog-omzetter en de kanalenmixer omzeilen voor helderder geluid (lagere signaal-ruisverhouding)</string>
-  <string name="pref_wm8994_dac_osr128_title">Hifi afspelen</string>
-  <string name="pref_wm8994_dac_osr128_summary">Digitaal-naar-analoog-omzetter 128 keer overbemonsteren (zuiverder geluid bij het afspelen van muziek)</string>
-  <string name="pref_wm8994_adc_osr128_title">Hifi opnemen</string>
-  <string name="pref_wm8994_adc_osr128_summary">Analoog-naar-digitaal-omzetter 128 keer overbemonsteren (verbetert opnamekwaliteit)</string>
-  <string name="pref_wm8994_fll_tuning_title">Afgestemde geluidsklok</string>
-  <string name="pref_wm8994_fll_tuning_summary">Gebruik afgestemde bron van WM8994-geluidsklok (verbetert geluidskwaliteit)</string>
   <string name="save_preset">Voorkeursinstellingen opslaan</string>
   <string name="load_preset">Voorkeurinstelling laden</string>
-  <string name="new_preset">Nieuwe voorkeurinstelling...</string>
+  <string name="new_preset">Nieuwe voorkeurinstelling…</string>
   <string name="help_title">Help</string>
   <string name="help_text"><b>Wat is DSP Manager?</b> 
 \n\n 
@@ -156,60 +115,10 @@ Word gedaan aan de gekozen aanpassingen van de gebruiker. Als alleen een lichte 
 De headset-filter is een cross feed ontwerp geïnspireerd door de beroemde BS2B analoge schakeling. Het effect laat mono geluid onveranderd, en past het verschil signaal aan door een lowpass filter. Dit benadert zowel hoofd, schaduw en interaurale vertraging tegelijk, de juiste soort Psych akoestische aanwijzingen geven voor de oren van de gebruiker. De bedoeling is om te voorkomen dat vermoeidheid van de luisteraar die voortvloeien uit de ongeloofwaardig stereoscheiding inherente alle headsets. Het effect moet worden ingeschakeld wanneer u gebruikmaakt van stereohoofdtelefoons. 
 \n\n 
 Omdat het mengen de stereoscheiding enigszins vermindert, is er een Haas effect, die kan worden gebruikt om de beeldbreedte van de waargenomen stereo te vergroten. Dit wordt geregeld door het besturingselement ‘Kamer type’.</string>
-  <!-- Sound Control -->
-  <string name="soundcontrol_title">Geluidscontrole</string>
-  <!-- Preferences -->
-  <string name="pref_soundcontrol_presets_title">Geluidscontrole voorkeurinstellingen</string>
-  <string name="pref_soundcontrol_headphone_gain_title">Hoofdtelefoon voorvesterking</string>
-  <string name="pref_soundcontrol_headphone_poweramp_gain_title">Hoofdtelefoon PowerAmp versterking</string>
-  <string name="pref_soundcontrol_microphone_gain_title">Microfoon versterking</string>
-  <string name="pref_soundcontrol_speaker_gain_title">Spreker versterking</string>
-  <string name="pref_soundcontrol_headphone_gain_left">Hoofdtelefoon (Links)</string>
-  <string name="pref_soundcontrol_headphone_gain_right">Hoofdtelefoon (Rechts)</string>
-  <string name="pref_soundcontrol_headphone_poweramp_gain_left">Hoofdtelefoon PowerAmp (Links)</string>
-  <string name="pref_soundcontrol_headphone_poweramp_gain_right">Hoofdtelefoon PowerAmp (Rechts)</string>
-  <string name="pref_soundcontrol_microphone_handset_gain_title">Microfoon van de telefoon</string>
-  <string name="pref_soundcontrol_microphone_camcorder_gain_title">Videocamera microfoon</string>
-  <string name="sc_version_title">Geluidscontrole</string>
-  <string name="sc_preset_summary">Kies een voorkeurinstelling om te laden</string>
-  <string name="sc_preset_loaded">Voorkeuzeinstelling \"%s\" is geladen!</string>
-  <string name="sc_preset_custom">Aangepast</string>
-  <string name="sc_preset_quality">Kwaliteit</string>
-  <string name="sc_preset_loudness">Loudness</string>
-  <string name="sc_preset_quiet">Stil</string>
-  <string name="sc_preset_stock">Standaard</string>
-  <string name="sc_value_changed">Stop en herstart de muziek om de waarden toe te passen!</string>
   <!-- Drawer -->
   <string name="navigation_drawer_toggle">Schakel scherm</string>
   <string name="navigation_drawer_open">Open navigatiescherm</string>
   <string name="navigation_drawer_close">Sluit navigatiescherm</string>
   <string name="navigation_toggle_drawer">Wisselen naar navigatiescherm</string>
   <string name="navigation_toggle_tabbed">Wisselen naar tabbladen</string>
-  <!-- Boeffla Sound Control -->
-  <string name="boeffla_sound_control">Boeffla geluidscontrole</string>
-  <string name="boeffla_sound_title">Boeffla geluid</string>
-  <string name="boeffla_sound_summary">Boeffla sound inschakelen</string>
-  <string name="bass_freq_tuning">Bass frequentie afstemming</string>
-  <string name="dac_direct_summary">Sla het analoge kanaal over</string>
-  <string name="dac_direct_title">DAC direct</string>
-  <string name="dac_oversampling_summary">128x oversampling</string>
-  <string name="dac_oversampling_title">DAC oversampling</string>
-  <string name="fll_tuning_summary">De chip klok afstemmen voor een betere kwaliteit</string>
-  <string name="fll_tuning_title">FLL afstemmen</string>
-  <string name="general_title">Algemeen</string>
-  <string name="headphone_title">Hoofdtelefoon</string>
-  <string name="mic_title">Microfoon</string>
-  <string name="mic_call">Volume gedurende het bellen</string>
-  <string name="mic_general">Algemene volume</string>
-  <string name="mono_downmix_summary">Stereo omzetten in mono</string>
-  <string name="mono_downmix_title">Downmixen naar mono</string>
-  <string name="over_saturation_suppress">Oversaturatie onderdrukken</string>
-  <string name="privacy_mode_summary">Demp de speaker zodra een hoofdtelefoon aangesloten is</string>
-  <string name="privacy_mode_title">Privacy modus</string>
-  <string name="speaker_tuning_summary">Telefoon speaker afstemmen voor een beter basgeluid</string>
-  <string name="speaker_tuning_title">Speaker afstemmen</string>
-  <string name="speaker_volume_title">Luidsprekervolume</string>
-  <string name="stereo_expansion_summary">Verbeter geluidsdiepte en helderheid</string>
-  <string name="stereo_expansion_title">Stereo uitbreiding</string>
-  <string name="volumes_title">Volumes</string>
 </resources>

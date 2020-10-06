@@ -7,7 +7,7 @@
             android:key="dsp.bass.enable"
             android:summaryOn="@string/pref_bassboost_summary_on"
             android:summaryOff="@string/pref_bassboost_summary_off"
-            android:title="@string/pref_bassboost_enable"></CheckBoxPreference>
+            android:title="@string/pref_bassboost_enable" />
         <com.bel.android.dspmanager.preference.SummariedListPreference
             android:entries="@array/bassboost_modes"
             android:dialogTitle="@string/dialog_effect"
@@ -29,7 +29,7 @@
             android:key="dsp.tone.enable"
             android:summaryOn="@string/pref_equalizer_summary_on"
             android:summaryOff="@string/pref_equalizer_summary_off"
-            android:title="@string/pref_equalizer_enable"></CheckBoxPreference>
+            android:title="@string/pref_equalizer_enable" />
         <com.bel.android.dspmanager.preference.SummariedListPreference
             android:entries="@array/equalizer_preset_modes"
             android:dialogTitle="@string/pref_equalizer_preset_title"
@@ -38,6 +38,5 @@
             android:title="@string/pref_equalizer_preset_title"
             android:entryValues="@array/equalizer_preset_values" />
         <com.bel.android.dspmanager.preference.EqualizerPreference android:key="dsp.tone.eq.custom" />
-        >
     </PreferenceCategory>
 </PreferenceScreen>

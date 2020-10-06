@@ -31,8 +31,4 @@
         <item>Muito Forte</item>
         <item>Fortíssimo</item>
     </string-array>
-    <string-array name="wm8994_bassboost_modes">
-        <item>Padrão</item>
-        <item>Caixas de Som Pequenas</item>
-    </string-array>
 </resources>

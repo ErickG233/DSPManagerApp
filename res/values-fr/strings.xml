@@ -38,7 +38,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
   <string name="dsp_settings_headset">Paramètres DSP - Casque</string>
   <string name="dsp_settings_speaker">Paramètres DSP - Haut-parleur</string>
   <string name="dsp_settings_bluetooth">Paramètres DSP - Bluetooth</string>
-  <string name="dsp_settings_wm8994">Paramètres DSP - WM8994</string>
   <string name="pref_dsp_title">Compresseur audio dynamique</string>
   <string name="pref_dsp_summary_on">La compression est activée</string>
   <string name="pref_dsp_summary_off">La compression est désactivée</string>
@@ -76,46 +75,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
   <string name="eq_preset_treble_reducer">Réduction des aiguës</string>
   <string name="eq_preset_vocal_booster">Amplification de la voix</string>
   <string name="eq_preset_custom">Personnalisé</string>
-  <!-- WM8994 -->
-  <!-- Categories -->
-  <string name="category_wm8994_internal_speaker">Haut-parleur</string>
-  <string name="category_wm8994_signal_processing">Traitement du signal</string>
-  <string name="category_wm8994_headphone_amp">Casque</string>
-  <string name="category_wm8994_codec_optimization">Optimisation des Codecs</string>
-  <string name="category_wm8994_dac_config">Paramètre de convertion Digital/Analog</string>
-  <string name="category_wm8994_analog_path">Configuration du chemin analogique</string>
-  <string name="category_wm8994_mic_settings">Paramètre du microphone</string>
-  <string name="category_wm8994_microphone_recording">Microphone</string>
-  <!-- Titles/Summaries -->
-  <string name="pref_wm8994_microphone_recording_title">Réglages d\'enregistrement</string>
-  <string name="pref_wm8994_headphone_amp_title">Niveau d\'amplification</string>
-  <string name="pref_wm8994_headphone_amp_summary">Définir le gain analogique</string>
-  <string name="pref_wm8994_headphone_amp_dlg_title">Niveau d\'amplification du casque</string>
-  <string name="pref_wm8994_headphone_amp_dlg_desc">Gain analogique</string>
-  <string name="pref_wm8994_bass_boost_enable_title">Amplification des basses</string>
-  <string name="pref_wm8994_bass_boost_enable_summary">Contrôles avancés de l\'amplification des basses</string>
-  <string name="pref_wm8994_bass_boost_title">Gamme d\'amplification des basses</string>
-  <string name="pref_wm8994_bass_boost_summary">Gestion avancée de la plage dynamique</string>
-  <string name="pref_wm8994_bass_boost_preset_title">Amplification prédéfinie des basses</string>
-  <string name="pref_wm8994_bass_boost_dlg_title">Amplification des basses</string>
-  <string name="pref_wm8994_bass_boost_gain_dlg_desc">Gain</string>
-  <string name="pref_wm8994_bass_boost_range_dlg_desc">Gamme d\'amplification des basses</string>
-  <string name="pref_wm8994_control_enable_title">Activer le contrôleur WM8994</string>
-  <string name="pref_wm8994_control_enable_summary">Contrôles avancés du processeur audio WM8994</string>
-  <string name="pref_wm8994_speaker_tuning_title">Réglages pour la musique</string>
-  <string name="pref_wm8994_speaker_tuning_summary">Configurer l\'égaliseur matériel pour plus de basses et un son équilibré</string>
-  <string name="pref_wm8994_mono_downmix_title">Encodage mono</string>
-  <string name="pref_wm8994_mono_downmix_summary">Encoder le son stéréo en son mono (pour les sorties stéréo, comme les casques)</string>
-  <string name="pref_wm8994_stereo_expansion_title">Extension stéréo</string>
-  <string name="pref_wm8994_stereo_expansion_summary">\'Étendre\' le son stéréo via le signal digital du processeur audio</string>
-  <string name="pref_wm8994_dac_direct_title">D/AC direct</string>
-  <string name="pref_wm8994_dac_direct_summary">Accès direct au convertisseur digital/analogique, contourne le mixeur. Produit un son pur (Rapport signal/bruit supérieur)</string>
-  <string name="pref_wm8994_dac_osr128_title">Lecture Hi-fi</string>
-  <string name="pref_wm8994_dac_osr128_summary">Convertisseur digital vers analogique, suréchantillonnage de 128x — son net pour la lecture de la musique</string>
-  <string name="pref_wm8994_adc_osr128_title">Enregistrement Hi-fi</string>
-  <string name="pref_wm8994_adc_osr128_summary">Convertisseur analogique vers digital, suréchantillonnage de 128x — augmente la qualité des enregistrements</string>
-  <string name="pref_wm8994_fll_tuning_title">Horloge audio personalisée</string>
-  <string name="pref_wm8994_fll_tuning_summary">Utiliser une horloge audio pour WM8994 personnalisée — améliore la qualité du son</string>
   <string name="save_preset">Sauver les pré-réglages</string>
   <string name="load_preset">Charger les pré-réglages</string>
   <string name="new_preset">Nouveau pré-réglage\u2026</string>
@@ -157,60 +116,10 @@ La compensation est ajoutée aux ajustements choisis par l\'utilisateur. Si aucu
 Le filtre du casque est un modèle d\'intercommunication inspiré du célèbre circuit analogique bs2b. L\'effet passe le son en mono sans le changer, et ajuste les différents signaux à travers un filtre passe-bas puis le renvoi au coté opposé à la fois en arrière plan et avec un retard inter-aural, ce qui donne un bon indice psychoacoustique pour les oreilles de l\'utilisateur. Le but est de prévenir la fatigue d\'écoute résultant de la séparation de la stéréo inhérente à tous les casques. L\'effet devrait être activé lorsque vous utilisez des écouteurs stéréo.
 \n\n
 L\'égaliseur réduit un peu la séparation stéréo, vous pouvez utiliser un effet de réverbération Haas pour augmenter la largeur de stéréo perçue. Ceci est contrôlé avec le paramètre “Type de chambre”.</string>
-  <!-- Sound Control -->
-  <string name="soundcontrol_title">Contrôle du son</string>
-  <!-- Preferences -->
-  <string name="pref_soundcontrol_presets_title">Pré-réglages</string>
-  <string name="pref_soundcontrol_headphone_gain_title">Gain du casque</string>
-  <string name="pref_soundcontrol_headphone_poweramp_gain_title">Gain PowerAmp du casque</string>
-  <string name="pref_soundcontrol_microphone_gain_title">Gain du micro</string>
-  <string name="pref_soundcontrol_speaker_gain_title">Gain du haut-parleur</string>
-  <string name="pref_soundcontrol_headphone_gain_left">Casque (Gauche)</string>
-  <string name="pref_soundcontrol_headphone_gain_right">Casque (Droit)</string>
-  <string name="pref_soundcontrol_headphone_poweramp_gain_left">Casque PowerAmp (Gauche)</string>
-  <string name="pref_soundcontrol_headphone_poweramp_gain_right">Casque PowerAmp (Droit)</string>
-  <string name="pref_soundcontrol_microphone_handset_gain_title">Micro du téléphone</string>
-  <string name="pref_soundcontrol_microphone_camcorder_gain_title">Micro du caméscope</string>
-  <string name="sc_version_title">Contrôle du son</string>
-  <string name="sc_preset_summary">Définir le réglage à charger</string>
-  <string name="sc_preset_loaded">Réglage \"%s\" chargé\u00A0!</string>
-  <string name="sc_preset_custom">Personnalisée</string>
-  <string name="sc_preset_quality">Qualité</string>
-  <string name="sc_preset_loudness">Intensité</string>
-  <string name="sc_preset_quiet">Silencieux</string>
-  <string name="sc_preset_stock">Par défaut</string>
-  <string name="sc_value_changed">S\'il vous plaît, stoppez et relancez votre musique pour appliquer les paramètres\u00A0!</string>
   <!-- Drawer -->
   <string name="navigation_drawer_toggle">Ouvrir le panneau</string>
   <string name="navigation_drawer_open">Ouvrir le panneau latéral</string>
   <string name="navigation_drawer_close">Fermer le panneau latéral</string>
   <string name="navigation_toggle_drawer">Utiliser le panneau latéral</string>
   <string name="navigation_toggle_tabbed">Utiliser les onglets</string>
-  <!-- Boeffla Sound Control -->
-  <string name="boeffla_sound_control">Contrôle de son Boeffla</string>
-  <string name="boeffla_sound_title">Son Boeffla</string>
-  <string name="boeffla_sound_summary">Activer le son Boeffla</string>
-  <string name="bass_freq_tuning">Personnalisation des basses</string>
-  <string name="dac_direct_summary">Outrepasser le canal analogique</string>
-  <string name="dac_direct_title">DAC direct</string>
-  <string name="dac_oversampling_summary">Sur-échantillonnage 128x</string>
-  <string name="dac_oversampling_title">Sur-échantillonnage DAC</string>
-  <string name="fll_tuning_summary">Personnaliser l\'horloge du contrôleur pour une meilleur qualité</string>
-  <string name="fll_tuning_title">Personnalisation FLL</string>
-  <string name="general_title">Général</string>
-  <string name="headphone_title">Casque</string>
-  <string name="mic_title">Micro</string>
-  <string name="mic_call">Volume pendant un appel</string>
-  <string name="mic_general">Volume général</string>
-  <string name="mono_downmix_summary">Convertir la stéréo en mono</string>
-  <string name="mono_downmix_title">Conversion mono</string>
-  <string name="over_saturation_suppress">Suppression des sur-saturations</string>
-  <string name="privacy_mode_summary">Couper le haut-parleur du téléphone lorsque le casque est branché</string>
-  <string name="privacy_mode_title">Mode privé</string>
-  <string name="speaker_tuning_summary">Personnaliser le haut-parleur du téléphone pour de meilleures basses</string>
-  <string name="speaker_tuning_title">Personnalisation du volume</string>
-  <string name="speaker_volume_title">Volume du haut parleur</string>
-  <string name="stereo_expansion_summary">Améliorer la profondeur et la clarté du son</string>
-  <string name="stereo_expansion_title">Élargisseur stéréo</string>
-  <string name="volumes_title">Volumes</string>
 </resources>

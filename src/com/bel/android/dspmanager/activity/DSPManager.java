@@ -54,10 +54,6 @@ import androidx.viewpager.widget.PagerTabStrip;
 import androidx.viewpager.widget.ViewPager;
 
 import com.bel.android.dspmanager.R;
-import com.bel.android.dspmanager.modules.boefflasoundcontrol.BoefflaSoundControl;
-import com.bel.android.dspmanager.modules.boefflasoundcontrol.BoefflaSoundControlHelper;
-import com.bel.android.dspmanager.modules.soundcontrol.SoundControl;
-import com.bel.android.dspmanager.modules.soundcontrol.SoundControlHelper;
 import com.bel.android.dspmanager.service.HeadsetService;
 import com.bel.android.dspmanager.widgets.CustomDrawerLayout;
 
@@ -71,12 +67,6 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
-/*import android.support.v13.app.FragmentPagerAdapter;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.view.PagerTabStrip;
-import android.support.v4.view.ViewPager;*/
 
 /**
  * Setting utility for CyanogenMod's DSP capabilities. This page is displays the
@@ -197,6 +187,7 @@ public final class  DSPManager extends Activity {
 
         mTitle = getTitle();
 
+        // 导航栏
         ActionBar mActionBar = getActionBar();
         assert mActionBar != null;
         mActionBar.setDisplayHomeAsUpEnabled(true);
@@ -208,6 +199,7 @@ public final class  DSPManager extends Activity {
             mFromSavedInstanceState = true;
         }
 
+        // 启动音效服务
         Intent serviceIntent = new Intent(this, HeadsetService.class);
         startService(serviceIntent);
         sendOrderedBroadcast(new Intent(DSPManager.ACTION_UPDATE_PREFERENCES),null);
@@ -308,7 +300,6 @@ public final class  DSPManager extends Activity {
             case R.id.dsp_action_tabbed:
                 mIsTabbed = !mIsTabbed;
                 mPreferences.edit().putBoolean(PREF_IS_TABBED, mIsTabbed).apply();
-                Utils.restartActivity(this);
                 return true;
 
             default:
@@ -366,6 +357,8 @@ public final class  DSPManager extends Activity {
     public void savePresetDialog() {
         // We first list existing presets
         File presetsDir;
+        // 添加系统版本判断，如果小于安卓10，文件夹在内置存储根目录
+        //                  如果大于等于安卓10，文件夹在android/data/应用名内
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
             presetsDir = new File(Environment.getExternalStorageDirectory()
                     .getAbsolutePath() + "/" + PRESETS_FOLDER);
@@ -429,14 +422,14 @@ public final class  DSPManager extends Activity {
 
     public void loadPresetDialog() {
         File presetsDir;
+        // 添加系统版本判断，如果小于安卓10，文件夹在内置存储根目录
+        //                  如果大于等于安卓10，文件夹在android/data/应用名内
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
             presetsDir = new File(Environment.getExternalStorageDirectory()
                     .getAbsolutePath() + "/" + PRESETS_FOLDER);
         } else {
             presetsDir = getExternalFilesDir(PRESETS_FOLDER);
         }
-/*        presetsDir = new File(Environment.getExternalStorageDirectory()
-                .getAbsolutePath() + "/" + PRESETS_FOLDER);*/
         presetsDir.mkdirs();
 
         File[] presets = presetsDir.listFiles((FileFilter) null);
@@ -499,23 +492,6 @@ public final class  DSPManager extends Activity {
         } catch (IOException e) {
             Toast.makeText(getApplicationContext(), R.string.save_preset_usb_failed, Toast.LENGTH_LONG).show();
         }
-        // else
-        try {
-            if (SoundControlHelper.getSoundControlHelper(DSPManager.this).isSupported()) {
-                copy(new File(spDir + packageName + "soundcontrol.xml"),
-                        new File(presetDir, packageName + "soundcontrol.xml"));
-            }
-            if (BoefflaSoundControlHelper.getBoefflaSoundControlHelper(DSPManager.this).isSupported()) {
-                copy(new File(spDir + packageName + "boefflasoundcontrol.xml"),
-                        new File(presetDir, packageName + "boefflasoundcontrol.xml"));
-            }
-            if (WM8994.isSupported(DSPManager.this)) {
-                copy(new File(spDir + packageName + "wm8994.xml"),
-                        new File(presetDir, packageName + "wm8994.xml"));
-            }
-        } catch (IOException e) {
-            Log.e("DSP", "Cannot save preset", e);
-        }
     }
 
     public void loadPreset(String name) {
@@ -555,24 +531,6 @@ public final class  DSPManager extends Activity {
                     new File(spDir + packageName + "usb.xml"));
         } catch (IOException e) {
             Toast.makeText(getApplicationContext(), R.string.load_preset_usb_failed, Toast.LENGTH_LONG).show();
-        }
-        try {
-            if (SoundControlHelper.getSoundControlHelper(DSPManager.this).isSupported()) {
-                copy(new File(presetDir, packageName + "soundcontrol.xml"),
-                        new File(spDir + packageName + "soundcontrol.xml"));
-                SoundControlHelper.getSoundControlHelper(DSPManager.this).applyValues();
-            }
-            if (BoefflaSoundControlHelper.getBoefflaSoundControlHelper(DSPManager.this).isSupported()) {
-                copy(new File(presetDir, packageName + "boefflasoundcontrol.xml"),
-                        new File(spDir + packageName + "boefflasoundcontrol.xml"));
-                BoefflaSoundControlHelper.getBoefflaSoundControlHelper(DSPManager.this).applyValues();
-            }
-            if (WM8994.isSupported(DSPManager.this)) {
-                copy(new File(presetDir, packageName + "wm8994.xml"),
-                        new File(spDir + packageName + "wm8994.xml"));
-            }
-        } catch (IOException e) {
-            Log.e("DSP", "Cannot load preset", e);
         }
 
         // Reload preferences
@@ -701,30 +659,6 @@ public final class  DSPManager extends Activity {
         mTitleMap.put("TITLE", getString(R.string.usb_title));
         tmpList.add(mTitleMap);
 
-        // Determine if WM8994 is supported
-        if (WM8994.isSupported(this)) {
-            mTitleMap = new HashMap<String, String>();
-            mTitleMap.put("ICON", R.drawable.empty_icon + "");
-            mTitleMap.put("TITLE", getString(R.string.wm8994_title));
-            tmpList.add(mTitleMap);
-        }
-
-        // Determine if SoundControl is supported
-        if (SoundControlHelper.getSoundControlHelper(this).isSupported()) {
-            mTitleMap = new HashMap<String, String>();
-            mTitleMap.put("ICON", R.drawable.empty_icon + "");
-            mTitleMap.put("TITLE", getString(R.string.soundcontrol_title));
-            tmpList.add(mTitleMap);
-        }
-
-        // Determine if Boeffla Sound is supported
-        if (BoefflaSoundControlHelper.getBoefflaSoundControlHelper(this).isSupported()) {
-            mTitleMap = new HashMap<String, String>();
-            mTitleMap.put("ICON", R.drawable.empty_icon + "");
-            mTitleMap.put("TITLE", getString(R.string.boeffla_sound_control));
-            tmpList.add(mTitleMap);
-        }
-
         return tmpList;
     }
 
@@ -737,21 +671,6 @@ public final class  DSPManager extends Activity {
         entryString.add("speaker");
         entryString.add("bluetooth");
         entryString.add("usb");
-
-        // Determine if WM8994 is supported
-        if (WM8994.isSupported(this)) {
-            entryString.add(WM8994.NAME);
-        }
-
-        // Determine if SoundControl is supported
-        if (SoundControlHelper.getSoundControlHelper(this).isSupported()) {
-            entryString.add(SoundControl.NAME);
-        }
-
-        // Determine if BoefflaSoundControl is supported
-        if (BoefflaSoundControlHelper.getBoefflaSoundControlHelper(this).isSupported()) {
-            entryString.add(BoefflaSoundControl.NAME);
-        }
 
         return entryString.toArray(new String[entryString.size()]);
     }
@@ -771,21 +690,11 @@ public final class  DSPManager extends Activity {
          */
         public static Fragment newInstance(int fragmentId) {
 
-            // Determine if fragment is WM8994
-            if (mEntries[fragmentId].equals(WM8994.NAME)) {
-                return new WM8994();
-            } else if (mEntries[fragmentId].equals(SoundControl.NAME)) {
-                return new SoundControl();
-            } else if (mEntries[fragmentId].equals(BoefflaSoundControl.NAME)) {
-                return new BoefflaSoundControl();
-            } else {
                 final DSPScreen dspFragment = new DSPScreen();
                 Bundle b = new Bundle();
                 b.putString("config", mEntries[fragmentId]);
-                //b.putBoolean("stereoWide", mHasStereoWide);
                 dspFragment.setArguments(b);
                 return dspFragment;
-            }
         }
 
         public PlaceholderFragment() {
@@ -820,20 +729,11 @@ public final class  DSPManager extends Activity {
         @Override
         public Fragment getItem(int position) {
 
-            // Determine if fragment is WM8994
-            if (entries[position].equals(WM8994.NAME)) {
-                return new WM8994();
-            } else if (entries[position].equals(SoundControl.NAME)) {
-                return new SoundControl();
-            } else if (entries[position].equals(BoefflaSoundControl.NAME)) {
-                return new BoefflaSoundControl();
-            } else {
                 final DSPScreen dspFragment = new DSPScreen();
                 Bundle b = new Bundle();
                 b.putString("config", entries[position]);
                 dspFragment.setArguments(b);
                 return dspFragment;
-            }
         }
     }
 

@@ -38,7 +38,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
   <string name="dsp_settings_headset">DSP 設定 - ヘッドフォン</string>
   <string name="dsp_settings_speaker">DSP 設定 - スピーカー</string>
   <string name="dsp_settings_bluetooth">DSP 設定 - Bluetooth デバイス</string>
-  <string name="dsp_settings_wm8994">DSP 設定 - WM8994</string>
   <string name="pref_dsp_title">ダイナミックレンジコンプレッション</string>
   <string name="pref_dsp_summary_on">コンプレッションは有効</string>
   <string name="pref_dsp_summary_off">コンプレッションは無効</string>
@@ -76,11 +75,4 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
   <string name="eq_preset_treble_reducer">トレブルリデュース</string>
   <string name="eq_preset_vocal_booster">ボーカルブースター</string>
   <string name="eq_preset_custom">カスタム</string>
-  <!-- WM8994 -->
-  <!-- Categories -->
-  <!-- Titles/Summaries -->
-  <!-- Sound Control -->
-  <!-- Preferences -->
-  <!-- Drawer -->
-  <!-- Boeffla Sound Control -->
 </resources>

@@ -3,14 +3,6 @@
     <string name="pref_equalizer_title">Equaliser</string>
     <string name="pref_equalizer_summary_on">Equaliser is enabled</string>
     <string name="pref_equalizer_summary_off">Equaliser is disabled</string>
-    <string name="category_wm8994_codec_optimization">Codec optimisation</string>
-    <string name="category_wm8994_dac_config">Digital/Analogue converter settings</string>
-    <string name="category_wm8994_analog_path">Analogue path configuration</string>
-    <string name="pref_wm8994_headphone_amp_summary">Customise the analogue gain</string>
-    <string name="pref_wm8994_headphone_amp_dlg_desc">Analogue gain</string>
-    <string name="pref_wm8994_dac_direct_summary">Access digital/analogue converter directly, bypassing the channel mixer. Produces cleaner audio (higher signal-to-noise ratio)</string>
-    <string name="pref_wm8994_dac_osr128_summary">Digital-to-analogue converter 128x oversampling &#8212; cleaner sound when playing music</string>
-    <string name="pref_wm8994_adc_osr128_summary">Analogue-to-digital converter 128x oversampling &#8212; increases quality of recordings</string>
     <string name="help_text"><b>What is DSP Manager?</b>
 \n\n
 DSP Manager is a per-output audio adjustment app. <i>DSP</i> stands for

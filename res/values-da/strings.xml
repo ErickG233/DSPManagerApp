@@ -38,7 +38,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
   <string name="dsp_settings_headset">DSP-indstillinger - Hovedtelefoner</string>
   <string name="dsp_settings_speaker">DSP-indstillinger - Højttaler</string>
   <string name="dsp_settings_bluetooth">DSP-indstillinger - Bluetooth-enhed</string>
-  <string name="dsp_settings_wm8994">DSP-indstillinger - WM8994</string>
   <string name="pref_dsp_title">Kompression af dynamikområdet</string>
   <string name="pref_dsp_summary_on">Kompression aktiveret</string>
   <string name="pref_dsp_summary_off">Kompression deaktiveret</string>
@@ -75,49 +74,6 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
   <string name="eq_preset_treble_reducer">Mindre diskant</string>
   <string name="eq_preset_vocal_booster">Mere vokal</string>
   <string name="eq_preset_custom">Brugerdefineret</string>
-  <!-- WM8994 -->
-  <!-- Categories -->
-  <string name="category_wm8994_internal_speaker">Højttaler</string>
-  <string name="category_wm8994_signal_processing">Signalbehandling</string>
-  <string name="category_wm8994_headphone_amp">Hovedtelefoner</string>
-  <string name="category_wm8994_codec_optimization">Codec-optimering</string>
-  <string name="category_wm8994_dac_config">Indstillinger for Digital/Analog-konverter</string>
-  <string name="category_wm8994_analog_path">Analog kanalkonfigurering</string>
-  <string name="category_wm8994_mic_settings">Mikrofonindstillinger</string>
-  <string name="category_wm8994_microphone_recording">Mikrofon</string>
-  <!-- Titles/Summaries -->
-  <string name="pref_wm8994_microphone_recording_title">Forudindstilling for optagelse</string>
-  <string name="pref_wm8994_headphone_amp_title">Forstærkerniveau</string>
-  <string name="pref_wm8994_headphone_amp_summary">Tilpasse analog forstærkning</string>
-  <string name="pref_wm8994_headphone_amp_dlg_title">Forstærkerniveau for hovedtelefon</string>
-  <string name="pref_wm8994_headphone_amp_dlg_desc">Analog forstærkning</string>
-  <string name="pref_wm8994_bass_boost_enable_title">Basforstærkning</string>
-  <string name="pref_wm8994_bass_boost_enable_summary">Avanceret styring af basforstærkning</string>
-  <string name="pref_wm8994_bass_boost_title">Basforstærkningsområde</string>
-  <string name="pref_wm8994_bass_boost_summary">Avanceret styring af dynamikområde</string>
-  <string name="pref_wm8994_bass_boost_preset_title">Forudindstilling for basforstærkning</string>
-  <string name="pref_wm8994_bass_boost_dlg_title">Basforstærkning</string>
-  <string name="pref_wm8994_bass_boost_gain_dlg_desc">Forstærkning</string>
-  <string name="pref_wm8994_bass_boost_range_dlg_desc">Basforstærkningsområde</string>
-  <string name="pref_wm8994_control_enable_title">Aktivér WM8994 styring</string>
-  <string name="pref_wm8994_control_enable_summary">Avanceret styring for WM8994-codec</string>
-  <string name="pref_wm8994_speaker_tuning_title">Indstil for musik</string>
-  <string name="pref_wm8994_speaker_tuning_summary">Konfigurér hardware-EQ for mere bas og afbalanceret lyd</string>
-  <string name="pref_wm8994_mono_downmix_title">Mono-downmix</string>
-  <string name="pref_wm8994_mono_downmix_summary">Downmix stereo til mono (for stereoudgange, såsom hovedtelefoner)</string>
-  <string name="pref_wm8994_stereo_expansion_title">Stereoudvidelse</string>
-  <string name="pref_wm8994_stereo_expansion_summary">“Udvid” stereolyden via digital signalbehandling</string>
-  <string name="pref_wm8994_dac_direct_title">D/AC direkte</string>
-  <string name="pref_wm8994_dac_direct_summary">Få adgang til digital/analog-konverteren direkte, udenom kanal mixeren. Giver renere lyd (højere signal-/støjforhold)</string>
-  <string name="pref_wm8994_dac_osr128_title">HiFi-afspilning</string>
-  <string name="pref_wm8994_dac_osr128_summary">Digital-til-analog-konverter 128x oversampling — renere lyd ved afspilning af musik</string>
-  <string name="pref_wm8994_adc_osr128_title">HiFi-optagelse</string>
-  <string name="pref_wm8994_adc_osr128_summary">Analog-til-digital-konverter 128x oversampling — øger kvaliteten af optagelserne</string>
-  <string name="pref_wm8994_fll_tuning_title">Afstemt lydfrekvens</string>
-  <string name="pref_wm8994_fll_tuning_summary">Anvend afstemt WM8994-lydfrekvens — forbedrer lydkvaliteten</string>
+
   <string name="help_title">Brugervejledning</string>
-  <!-- Sound Control -->
-  <!-- Preferences -->
-  <!-- Drawer -->
-  <!-- Boeffla Sound Control -->
 </resources>

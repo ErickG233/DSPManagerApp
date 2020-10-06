@@ -73,7 +73,6 @@ public final class DSPScreen extends PreferenceFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         String config = getArguments().getString("config");
-        //boolean stereoWide = getArguments().getBoolean("stereoWide");
 
         getPreferenceManager().setSharedPreferencesName(
                 DSPManager.SHARED_PREFERENCES_BASENAME + "." + config);
@@ -85,8 +84,6 @@ public final class DSPScreen extends PreferenceFragment {
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-
-
 
         getPreferenceManager().getSharedPreferences()
                 .registerOnSharedPreferenceChangeListener(listener);

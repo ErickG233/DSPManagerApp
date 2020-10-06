@@ -11,7 +11,6 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnTouchListener;
 
 import com.bel.android.dspmanager.R;
 import com.bel.android.dspmanager.service.HeadsetService;
@@ -60,24 +59,24 @@ public class EqualizerPreference extends DialogPreference {
         if (value != null && mListEqualizer != null) {
             String[] levelsStr = value.split(";");
             for (int i = 0; i < 6; i++) {
-                mListEqualizer.setBand(i, Float.valueOf(levelsStr[i]));
+                mListEqualizer.setBand(i, Float.parseFloat(levelsStr[i]));
             }
         }
     }
 
+    // I can't solve this method's warning. Sorry
     @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onBindDialogView(View view) {
         super.onBindDialogView(view);
-
         mDialogEqualizer = view.findViewById(R.id.FrequencyResponse);
-        mDialogEqualizer.setOnTouchListener(new OnTouchListener() {
+        mDialogEqualizer.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 float x = event.getX();
                 float y = event.getY();
 
-                /* Which band is closest to the position user pressed? */
+                //* Which band is closest to the position user pressed? *//
                 int band = mDialogEqualizer.findClosest(x);
 
                 int wy = v.getHeight();
@@ -107,11 +106,16 @@ public class EqualizerPreference extends DialogPreference {
     @Override
     protected void onDialogClosed(boolean positiveResult) {
         if (positiveResult) {
-            String value = "";
+            StringBuilder value = new StringBuilder();
             for (int i = 0; i < 6; i++) {
-                value += String.format(Locale.ROOT, "%.1f", Math.round(mDialogEqualizer.getBand(i) * 10.f) / 10.f) + ";";
+                // 添加保险，如果是最后的波段就不添加分隔符
+                if (i < 5) {
+                    value.append(String.format(Locale.ROOT, "%.1f", Math.round(mDialogEqualizer.getBand(i) * 10.f) / 10.f)).append(";");
+                } else {
+                    value.append(String.format(Locale.ROOT, "%.1f", Math.round(mDialogEqualizer.getBand(i) * 10.f) / 10.f));
+                }
             }
-            persistString(value);
+            persistString(value.toString());
             updateListEqualizerFromValue();
         }
 
@@ -124,7 +128,7 @@ public class EqualizerPreference extends DialogPreference {
     @Override
     protected void onBindView(View view) {
         super.onBindView(view);
-        mListEqualizer = (EqualizerSurface) view.findViewById(R.id.FrequencyResponse);
+        mListEqualizer = view.findViewById(R.id.FrequencyResponse);
         updateListEqualizerFromValue();
     }
 

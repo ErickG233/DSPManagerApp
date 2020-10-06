@@ -124,68 +124,6 @@ public class HeadsetService extends Service{
                 throw new RuntimeException(e);
             }
         }
-
-        // 设置均衡器音效参数
-        // 目前用不到
-        /*
-        private void setParameterFloatArray(AudioEffect audioEffect, int parameter, float value[])
-        {
-            try
-            {
-                byte[] arguments = new byte[]
-                        {
-                                (byte)(parameter), (byte)(parameter >> 8),
-                                (byte)(parameter >> 16), (byte)(parameter >> 24)
-                        };
-                byte[] result = new byte[value.length * 4];
-                ByteBuffer byteDataBuffer = ByteBuffer.wrap(result);
-                byteDataBuffer.order(ByteOrder.nativeOrder());
-                for (float v : value) byteDataBuffer.putFloat(v);
-                Method setParameter = AudioEffect.class.getMethod("setParameter", byte[].class, byte[].class);
-                setParameter.invoke(audioEffect, arguments, result);
-            }
-            catch (Exception e)
-            {
-                throw new RuntimeException(e);
-            }
-        }
-        */
-
-        // 推测设定输入输出
-        // 输入
-        // 目前用不到
-        /*
-        private byte[] IntToByte(int[] input)
-        {
-            int int_index, byte_index;
-            int iterations = input.length;
-            byte[] buffer = new byte[input.length * 4];
-            int_index = byte_index = 0;
-            for (; int_index != iterations;)
-            {
-                buffer[byte_index] = (byte)(input[int_index] & 0x00FF);
-                buffer[byte_index + 1] = (byte)((input[int_index] & 0xFF00) >> 8);
-                buffer[byte_index + 2] = (byte)((input[int_index] & 0xFF0000) >> 16);
-                buffer[byte_index + 3] = (byte)((input[int_index] & 0xFF000000) >> 24);
-                ++int_index;
-                byte_index += 4;
-            }
-            return buffer;
-        }
-        */
-
-        // 输出
-        // 目前用不到
-        /*
-        private int byteArrayToInt(byte[] encodedValue)
-        {
-            int value = (encodedValue[3] << 24);
-            value |= (encodedValue[2] & 0xFF) << 16;
-            value |= (encodedValue[1] & 0xFF) << 8;
-            value |= (encodedValue[0] & 0xFF);
-            return value;
-        }
-        */
     }
 
     // 创建进程间通信
@@ -494,7 +432,7 @@ public class HeadsetService extends Service{
 
     private float[] eqLevels = new float[6];
 
-    /* 一手叮 没用的玩意
+
     /**
      * There appears to be no way to find out what the current actual audio routing is.
      * For instance, if a wired headset is plugged in, the following objects/classes are involved:</p>
@@ -576,13 +514,13 @@ public class HeadsetService extends Service{
         // 动态范围压缩
         session.DSPcompression.setEnabled(preferences.getBoolean("dsp.compression.enable", false));
         MDSPGbEf.setParameter(session.DSPcompression, 0,
-                Short.valueOf(preferences.getString("dsp.compression.mode", "0")));
+                Short.parseShort(preferences.getString("dsp.compression.mode", "0")));
 
         // 低音
         session.mBassBoost.setEnabled(preferences.getBoolean("dsp.bass.enable",false));
-        session.mBassBoost.setStrength(Short.valueOf(preferences.getString("dsp.bass.mode","0")));
+        session.mBassBoost.setStrength(Short.parseShort(preferences.getString("dsp.bass.mode","0")));
         // 低音频点
-        short freq = Short.valueOf(preferences.getString("dsp.bassboost.freq", "55"));
+        short freq = Short.parseShort(preferences.getString("dsp.bassboost.freq", "55"));
         session.setParameter(session.mBassBoost,133, freq);
 
         // 均衡器
@@ -595,17 +533,18 @@ public class HeadsetService extends Service{
         }
         else {
             String[] levels = preferences.getString("dsp.tone.eq.custom", "0.0;0.0;0.0;0.0;0.0;0.0").split(";");
+            // 注意，六个控制条只有五个分隔符
             for (short i = 0; i < levels.length; i++) {
-                eqLevels[i] = Float.valueOf(levels[i]);
+                eqLevels[i] = Float.parseFloat(levels[i]);
                 session.mEqualizer.setBandLevel(i, (short) Math.round(eqLevels[i] * 100));
             }
         }
         // 响度补偿
-        MDSPGbEf.setParameter(session.mEqualizer,1000,Short.valueOf(preferences.getString("dsp.tone.loudness", "10000")));
+        MDSPGbEf.setParameter(session.mEqualizer,1000,Short.parseShort(preferences.getString("dsp.tone.loudness", "10000")));
 
         // 空间立体声
         session.mVirtualizer.setEnabled(preferences.getBoolean("dsp.headphone.enable", false));
         session.mVirtualizer.setStrength(
-                Short.valueOf(preferences.getString("dsp.headphone.mode", "0")));
+                Short.parseShort(preferences.getString("dsp.headphone.mode", "0")));
     }
 }

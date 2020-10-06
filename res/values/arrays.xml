@@ -94,29 +94,29 @@
 
     <string-array name="equalizer_preset_values" translatable="false">
         <!-- Acoustic -->
-        <item>4.5;4.5;3.5;1.75;3.5;2.5;</item>
+        <item>4.5;4.5;3.5;1.75;3.5;2.5</item>
         <!-- Bass Booster -->
-        <item>6.5;6.5;4.0;0.0;0.0;0.0;</item>
+        <item>6.5;6.5;4.0;0.0;0.0;0.0</item>
         <!-- Bass Reducer -->
-        <item>-6.5;-6.5;-4.0;0.0;0.0;0.0;</item>
+        <item>-6.5;-6.5;-4.0;0.0;0.0;0.0</item>
         <!-- Classical -->
-        <item>4.0;4.0;3.25;-0.5;2.0;3.5;</item>
+        <item>4.0;4.0;3.25;-0.5;2.0;3.5</item>
         <!-- Deep -->
-        <item>4.0;4.0;0.5;1.5;-4.0;-4.5;</item>
+        <item>4.0;4.0;0.5;1.5;-4.0;-4.5</item>
         <!-- Flat -->
-        <item>0.0;0.0;0.0;0.0;0.0;0.0;</item>
+        <item>0.0;0.0;0.0;0.0;0.0;0.0</item>
         <!-- R&B -->
-        <item>5.5;5.5;3.5;-1.75;1.5;2.5;</item>
+        <item>5.5;5.5;3.5;-1.75;1.5;2.5</item>
         <!-- Rock -->
-        <item>4.5;4.5;2.75;-0.5;2.75;4.0;</item>
+        <item>4.5;4.5;2.75;-0.5;2.75;4.0</item>
         <!-- Small Speakers -->
-        <item>6.5;6.5;4.0;0.0;-6.5;-4.0;</item>
+        <item>6.5;6.5;4.0;0.0;-6.5;-4.0</item>
         <!-- Treble Booster -->
-        <item>0.0;0.0;0.0;0.0;4.0;6.5;</item>
+        <item>0.0;0.0;0.0;0.0;4.0;6.5</item>
         <!-- Treble Reducer -->
-        <item>0.0;0.0;0.0;0.0;-6.5;-4.0;</item>
+        <item>0.0;0.0;0.0;0.0;-6.5;-4.0</item>
         <!-- Vocal Booster -->
-        <item>-2.5;-2.5;0.0;3.5;1.5;-2.0;</item>
+        <item>-2.5;-2.5;0.0;3.5;1.5;-2.0</item>
         <!-- Custom -->
         <item>custom</item>
     </string-array>
@@ -158,33 +158,5 @@
         <item>150Hz</item>
         <item>180Hz</item>
         <item>200Hz</item>
-    </string-array>
-
-
-    <string-array name="wm8994_bassboost_modes">
-        <item>Standard</item>
-        <item>Small Speakers</item>
-    </string-array>
-
-    <string-array name="wm8994_bassboost_modes_values" translatable="false">
-        <item>0</item>
-        <item>-1</item>
-    </string-array>
-
-
-    <string-array name="sc_presets_entries" translatable="false">
-        <item>@string/sc_preset_custom</item>
-        <item>@string/sc_preset_quality</item>
-        <item>@string/sc_preset_loudness</item>
-        <item>@string/sc_preset_quiet</item>
-        <item>@string/sc_preset_stock</item>
-    </string-array>
-
-    <string-array name="sc_presets_values" translatable="false">
-        <item>0</item>
-        <item>1</item>
-        <item>2</item>
-        <item>3</item>
-        <item>4</item>
     </string-array>
 </resources>

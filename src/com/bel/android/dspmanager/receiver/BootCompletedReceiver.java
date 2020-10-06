@@ -12,6 +12,7 @@
  */
 package com.bel.android.dspmanager.receiver;
 
+import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -26,19 +27,9 @@ import com.bel.android.dspmanager.service.HeadsetService;
  * @author alankila
  */
 public class BootCompletedReceiver extends BroadcastReceiver {
+    @SuppressLint("UnsafeProtectedBroadcastReceiver")
     @Override
     public void onReceive(Context context, Intent intent) {
         context.startService(new Intent(context, HeadsetService.class));
-        /*if (WM8994.isSupported(context)) {
-            WM8994.restore(context);
-        }
-        if (SoundControlHelper.getSoundControlHelper(context).isSupported()) {
-            SoundControlHelper.getSoundControlHelper(context).applyValues();
-        }
-        if (BoefflaSoundControlHelper.getBoefflaSoundControlHelper(context).isSupported() &&
-                BoefflaSoundControlHelper.getBoefflaSoundControlHelper(context).getBoefflaSound() &&
-                BoefflaSoundControlHelper.getBoefflaSoundControlHelper(context).readBoefflaSound() != 1) {
-            BoefflaSoundControlHelper.getBoefflaSoundControlHelper(context).applyValues();
-        }*/
     }
 }
