@@ -50,6 +50,12 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
     <string name="save_preset_bluetooth_failed">无法保存蓝牙配置，请确认您曾经打开过蓝牙配置页面。</string>
     <string name="save_preset_usb_failed">无法保存USB底座配置，请确认您曾经打开过USB底座配置页面。</string>
     <!-- Save preset failed end -->
+    <!-- MasterSwitch -->
+    <string name="pref_dsp_master_switch_title">音效总开关</string>
+    <string name="pref_dsp_master_switch_summary_on">音效已开启</string>
+    <string name="pref_dsp_master_switch_summary_off">音效已关闭</string>
+    <string name="pref_dsp_master_switch_enable">音效总开关</string>
+    <!-- MasterSwitch end -->
     <!-- ErickG Addition End -->
     <string name="pref_unavailable">此功能在您的设备上不可用</string>
     <string name="dsp_settings_headset">DSP 设置 - 耳机</string>

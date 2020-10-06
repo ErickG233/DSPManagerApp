@@ -31,7 +31,6 @@ import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -87,7 +86,7 @@ public final class  DSPManager extends Activity {
     public static final String SHARED_PREFERENCES_BASENAME = "com.bel.android.dspmanager";
     public static final String ACTION_UPDATE_PREFERENCES = "com.bel.android.dspmanager.UPDATE";
     private static final String PRESETS_FOLDER = "DSPPresets";
-    // 音频输出类型
+    // 音频输出类型（音频路由）
     private static int routing;
     //==================================
     private static String[] mEntries;
@@ -170,8 +169,9 @@ public final class  DSPManager extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        mPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+        mPreferences = getSharedPreferences(DSPManager.SHARED_PREFERENCES_BASENAME + "." + HeadsetService.getAudioOutputRouting(), 0);
         mUserLearnedDrawer = mPreferences.getBoolean(PREF_USER_LEARNED_DRAWER, false);
+
         // 调用权限获取方法
         // 判断当前系统版本
         if (Build.VERSION.SDK_INT >Build.VERSION_CODES.M){

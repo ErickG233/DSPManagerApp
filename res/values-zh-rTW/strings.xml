@@ -51,6 +51,12 @@ Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
   <string name="save_preset_bluetooth_failed">無法保存藍牙配置，請確認您曾經打開過藍牙配置頁面。</string>
   <string name="save_preset_usb_failed">無法保存USB基座配置，請確認您曾經打開過USB基座配置頁面。</string>
   <!-- Save preset failed end -->
+  <!-- MasterSwitch -->
+  <string name="pref_dsp_master_switch_title">總音訊效果開關</string>
+  <string name="pref_dsp_master_switch_summary_on">音訊效果已打開</string>
+  <string name="pref_dsp_master_switch_summary_off">音訊效果已關閉</string>
+  <string name="pref_dsp_master_switch_enable">總音訊效果控制</string>
+  <!-- MasterSwitch end -->
   <!-- ErickG Addition End -->
   <string name="dsp_settings_headset">數位訊號處理（DSP）設定－有線耳機</string>
   <string name="dsp_settings_speaker">數位訊號處理（DSP）設定－手機喇叭</string>
