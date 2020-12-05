@@ -144,19 +144,4 @@
         <item>500</item>
         <item>1000</item>
     </string-array>
-
-    <string-array name="bassboost_freqs" translatable="false">
-        <item>20Hz</item>
-        <item>30Hz</item>
-        <item>45Hz</item>
-        <item>55Hz</item>
-        <item>60Hz</item>
-        <item>70Hz</item>
-        <item>80Hz</item>
-        <item>100Hz</item>
-        <item>120Hz</item>
-        <item>150Hz</item>
-        <item>180Hz</item>
-        <item>200Hz</item>
-    </string-array>
 </resources>

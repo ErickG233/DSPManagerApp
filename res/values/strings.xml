@@ -25,12 +25,11 @@
     <string name="save_preset_bluetooth_failed">Could not save Bluetooth preset,make sure you have tapped Bluetooth page.</string>
     <string name="save_preset_usb_failed">Could not save Usb/Dock preset,make sure you have tapped Usb/Dock page.</string>
     <!-- Save preset failed end -->
-    <!-- MasterSwitch -->
-    <string name="pref_dsp_master_switch_title">Master switch / Output control</string>
-    <string name="pref_dsp_master_switch_summary_on">Master audio is enabled</string>
-    <string name="pref_dsp_master_switch_summary_off">Master audio is disabled</string>
-    <string name="pref_dsp_master_switch_enable">Master switch</string>
-    <!-- MasterSwitch end -->
+    <!-- EffectMode start -->
+    <string name="dsp_effect_mode_title">EffectMode:</string>
+    <string name="dsp_effect_global">Global effect</string>
+    <string name="dsp_effect_general">Common</string>
+    <!-- EffectMode end -->
     <!-- ErickG Addition End -->
     <string name="dsp_settings_headset">DSP settings - Headset</string>
     <string name="dsp_settings_speaker">DSP settings - Phone speaker</string>

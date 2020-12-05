@@ -8,6 +8,10 @@
         android:id="@+id/load_preset"
         android:title="@string/load_preset" />
     <item
+        android:id="@+id/dsp_effect_mode"
+        android:title="@string/dsp_effect_mode_title"
+        />
+    <item
         android:id="@+id/dsp_action_tabbed"
         android:title="@string/navigation_toggle_tabbed"
         app:showAsAction="never" />

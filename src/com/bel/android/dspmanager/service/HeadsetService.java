@@ -29,6 +29,9 @@ import androidx.annotation.Nullable;
 import com.bel.android.dspmanager.activity.DSPManager;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -47,6 +50,11 @@ public class HeadsetService extends Service {
     // 设定音效标签
     static final String TAG = "DSPManager";
 
+    // 音效模块依赖库唯一标识符
+    public final static UUID EFFECT_TYPE_CUSTOM = UUID.fromString("09e8ede0-ddde-11db-b4f6-0002a5d5c51b");
+    // DSP动态范围压缩唯一标识符
+    public final static UUID EFFECT_DSP_COMPRESSION = UUID.fromString("c3b61114-def3-5a85-a39d-5cc4020ab8af");
+
     /**
      * 创建DSP模块
      * 静态类
@@ -58,11 +66,6 @@ public class HeadsetService extends Service {
         private Equalizer mEqualizer;        // 均衡器
         private BassBoost mBassBoost;        // 低频增益
         private Virtualizer mVirtualizer;    // 空间混响
-
-        // 音效模块依赖库唯一标识符
-        final static UUID EFFECT_TYPE_CUSTOM = UUID.fromString("09e8ede0-ddde-11db-b4f6-0002a5d5c51b");
-        // DSP动态范围压缩唯一标识符
-        final static UUID EFFECT_DSP_COMPRESSION = UUID.fromString("c3b61114-def3-5a85-a39d-5cc4020ab8af");
 
         // 实例一个音效渲染
         public DSPModule(int sessionId) {
@@ -123,7 +126,22 @@ public class HeadsetService extends Service {
                 throw new RuntimeException(e);
             }
         }
+
     }
+
+    // 创建进程间通信
+    public class LocalBinder extends Binder {
+        public HeadsetService getService() {
+            return HeadsetService.this;
+        }
+    }
+
+    private final LocalBinder mBinder = new LocalBinder();
+
+    /**
+     * Known audio sessions and their associated audioeffect suites.
+     */
+    private final Map<Integer, DSPModule> mAudioSessions = new HashMap<Integer, DSPModule>();
 
     // 组件：输出模式检测，检测扬声器，耳机，蓝牙，usb底座
 
@@ -157,31 +175,43 @@ public class HeadsetService extends Service {
 
     // 实例音效
     private DSPModule mDSPEffect;
-    // 因为是全局渲染音效，所以当 effectMode 为0时就是打开音效总开关并开始全局音效配置
-    private int effectMode = 1;
+    // 添加音效模式
+    public static int effectMode;
+    // 添加音效模式的配置
+    private SharedPreferences preferencesEffectMode;
     // 音效广播接收器
     private final BroadcastReceiver mAudioSessionReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
-            int sessionId = intent.getIntExtra(AudioEffect.EXTRA_AUDIO_SESSION, AudioEffect.ERROR);
-            // 保险，如果获取错误值直接返回不进行下一步操作
-            if (sessionId == AudioEffect.ERROR) {
+            int sessionId = intent.getIntExtra(AudioEffect.EXTRA_AUDIO_SESSION, 0);
+            if (sessionId == 0) {
                 return;
             }
             // 开始音效控制的处理工作
             if (AudioEffect.ACTION_OPEN_AUDIO_EFFECT_CONTROL_SESSION.equals(action)) {
-                mDSPEffect = new DSPModule(sessionId);
-                // 更新DSP方法
-                // 因为在当前配置页面所以无需刷新页面
-                updateDSP(false);
+                if (effectMode == 0) {
+                    return;
+                }
+                if (!mAudioSessions.containsKey(sessionId)) {
+                    DSPModule prevDSP_Module = new DSPModule(sessionId);
+                    if (prevDSP_Module.DSP_Compression == null) {
+                        Log.e(TAG, "Sound effect create fail");
+                        prevDSP_Module.release();
+                        prevDSP_Module = null;
+                    } else {
+                        mAudioSessions.put(sessionId, prevDSP_Module);
+                    }
+                    updateDSP(false);
+                }
             }
             // 关闭音效控制时的清理工作
             if (AudioEffect.ACTION_CLOSE_AUDIO_EFFECT_CONTROL_SESSION.equals(action)) {
-                if (mDSPEffect != null) {
-                    mDSPEffect.release();
+                DSPModule prevDSP_Module = mAudioSessions.remove(sessionId);
+                if (prevDSP_Module != null) {
+                    prevDSP_Module.release();
                 }
-                mDSPEffect = null;
+                prevDSP_Module = null;
             }
         }
     };
@@ -209,7 +239,7 @@ public class HeadsetService extends Service {
     // 耳机
     private final BroadcastReceiver mRoutingReceiver = new BroadcastReceiver() {
         @Override
-        public void onReceive(Context context, Intent intent) {
+        public void onReceive(final Context context,final Intent intent) {
             final String action = intent.getAction();
             // 添加一个临时的耳机插入检测
             final boolean prevUseHeadset = mUseHeadset;
@@ -231,7 +261,7 @@ public class HeadsetService extends Service {
     // 蓝牙
     private final BroadcastReceiver mBtReceiver = new BroadcastReceiver() {
         @Override
-        public void onReceive(Context context, Intent intent) {
+        public void onReceive(final Context context,final Intent intent) {
             final String action = intent.getAction();
             if (BluetoothA2dp.ACTION_CONNECTION_STATE_CHANGED.equals(action)) {
                 int state = intent.getIntExtra(BluetoothProfile.EXTRA_STATE,
@@ -265,7 +295,7 @@ public class HeadsetService extends Service {
     // USB底座
     private final BroadcastReceiver mUsbReceiver = new BroadcastReceiver() {
         @Override
-        public void onReceive(Context context, Intent intent) {
+        public void onReceive(final Context context,final Intent intent) {
             final String action = intent.getAction();
             final boolean prevUseUSB = mUseUsb;
             if (UsbManager.ACTION_USB_DEVICE_ATTACHED.equals(action)) {
@@ -296,87 +326,6 @@ public class HeadsetService extends Service {
             }
         }
     };
-
-    // 构造运行方法
-    @Override
-    public void onCreate() {
-        super.onCreate();
-        // 创建启动服务
-        // Starting service
-        IntentFilter audioFilter = new IntentFilter();
-        audioFilter.addAction(AudioEffect.ACTION_OPEN_AUDIO_EFFECT_CONTROL_SESSION);
-        audioFilter.addAction(AudioEffect.ACTION_CLOSE_AUDIO_EFFECT_CONTROL_SESSION);
-        registerReceiver(mAudioSessionReceiver, audioFilter);
-
-        // 耳机插入时意图过滤器
-        final IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction(AudioManager.ACTION_HEADSET_PLUG);
-        intentFilter.addAction("android.intent.action.ANALOG_AUDIO_DOCK_PLUG");
-
-        // USB底座插入意图过滤器
-        final IntentFilter usbFilter = new IntentFilter();
-        usbFilter.addAction(UsbManager.ACTION_USB_DEVICE_ATTACHED);
-        usbFilter.addAction(UsbManager.ACTION_USB_DEVICE_DETACHED);
-
-
-        // 动态注册广播
-        registerReceiver(mRoutingReceiver, intentFilter);
-        registerReceiver(mUsbReceiver, usbFilter);
-        registerReceiver(mPreferenceUpdateReceiver, new IntentFilter(DSPManager.ACTION_UPDATE_PREFERENCES));
-
-        // 蓝牙
-        final IntentFilter btFilter = new IntentFilter();
-        btFilter.addAction(BluetoothA2dp.ACTION_CONNECTION_STATE_CHANGED);
-        btFilter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
-        registerReceiver(mBtReceiver, btFilter);
-    }
-
-    // 写一个方法让音效得以渲染、释放
-    // 因为这个默认是全局音效启动，所以不考虑会话不等于0的情况
-    // 如果模式为0，则开始全局渲染音效，如果不是，关掉此应用的音效渲染
-    private void setEffectMode(int effectMode) {
-        if (effectMode == 0) {
-            // 全局模式
-            if (mDSPEffect != null) {
-                mDSPEffect.release();
-                mDSPEffect = null;
-            } else {
-                mDSPEffect = new DSPModule(0);
-            }
-        } else {
-            // 不是全局模式直接杀掉
-            if (mDSPEffect != null) {
-                mDSPEffect.release();
-            }
-            mDSPEffect = null;
-        }
-    }
-
-    // 重写销毁方法
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        // 注销已注册的活动
-        unregisterReceiver(mAudioSessionReceiver);
-        unregisterReceiver(mRoutingReceiver);
-        unregisterReceiver(mUsbReceiver);
-        unregisterReceiver(mBtReceiver);
-        unregisterReceiver(mPreferenceUpdateReceiver);
-
-        if (mDSPEffect != null) {
-            mDSPEffect.release();
-        }
-        mDSPEffect = null;
-    }
-
-    // 创建进程间通信
-    public class LocalBinder extends Binder {
-        public HeadsetService getService() {
-            return HeadsetService.this;
-        }
-    }
-
-    private final LocalBinder mBinder = new LocalBinder();
 
     /**
      * 服务绑定
@@ -471,7 +420,6 @@ public class HeadsetService extends Service {
             }
         } else {
             String[] levels = preferences.getString("dsp.tone.eq.custom", "0.0;0.0;0.0;0.0;0.0;0.0").split(";");
-            // 注意，六个控制条只有五个分隔符
             for (short i = 0; i < levels.length; i++) {
                 eqLevels[i] = Float.parseFloat(levels[i]);
                 session.mEqualizer.setBandLevel(i, (short) Math.round(eqLevels[i] * 100));
@@ -480,11 +428,11 @@ public class HeadsetService extends Service {
         // 响度补偿
         mDSPEffect.setParameter(session.mEqualizer, 1000, Short.parseShort(preferences.getString("dsp.tone.loudness", "10000")));
 
-
         // 空间混响
         session.mVirtualizer.setEnabled(preferences.getBoolean("dsp.headphone.enable", false));
         session.mVirtualizer.setStrength(
                 Short.parseShort(preferences.getString("dsp.headphone.mode", "0")));
+
     }
 
     /**
@@ -496,6 +444,14 @@ public class HeadsetService extends Service {
     // 并且在均衡器弹出时候不影响音效的刷新
     protected void updateDSP(boolean ifRefresh) {
 
+        // 获取全局模式状态
+        effectMode = preferencesEffectMode.getInt("dsp.manager.effectMode", 0);
+
+        // 创建一个接收音频输出的字符串，判断当前音频输出是哪个
+        final String outPutMode = getAudioOutputRouting();
+        // 创建一个共享选项用来接收页面切换之后的音频配置
+        SharedPreferences sharedPreferences = getSharedPreferences(DSPManager.SHARED_PREFERENCES_BASENAME + "." + outPutMode, 0);
+
         // 判断是否刷新页面配置，如果是，连同页面一起刷新
         // 传递需要切换页面的意图
         if (ifRefresh) {
@@ -503,43 +459,137 @@ public class HeadsetService extends Service {
             sendBroadcast(refreshPageIntent);
         }
 
-        // 创建一个接收音频输出的字符串，判断当前音频输出是哪个
-        final String outPutMode = getAudioOutputRouting();
-        // 创建一个共享选项用来接收页面切换之后的音频配置
-        SharedPreferences sharedPreferences = getSharedPreferences(DSPManager.SHARED_PREFERENCES_BASENAME + "." + outPutMode, 0);
-
-        // 调试，查看音频输出模式用
-        // Log.i("音频输出模式",""+ effectMode);
-
-        // 根据音效总开关设置音效处理模式
-        int thisEffectMode = sharedPreferences.getBoolean("dsp.masterswitch.enable", false) ? 0 : 1;
-
-        // 调试，检测效果总开关有没有打开
-        // Log.i("效果总开关", "模式：" + effectMode);
-
-        // 判断音效模式，0为需要渲染，1为不需要
-        // 此判断方法为一次性，有变动时检测模式才会再次运作
-        // 如果持续运行则跳过此检测方法避免音效渲染被终止
-        if (thisEffectMode == 0 && thisEffectMode != effectMode) {
-            effectMode = 0;
-            setEffectMode(thisEffectMode);
-        } else if (thisEffectMode == 1 && thisEffectMode != effectMode) {
-            effectMode = 1;
-            setEffectMode(thisEffectMode);
-        }
-
-        // 全局音效渲染
         if (effectMode == 0) {
+            // 全局音效渲染
             try {
                 updateDSPEffect(sharedPreferences, mDSPEffect);
             } catch (Exception e) {
                 Log.e(TAG, "Could not effect audio.", e);
+            }
+        } else {
+            for (Integer sessionId : new ArrayList<Integer>(mAudioSessions.keySet())){
+                try {
+                    updateDSPEffect(sharedPreferences, mAudioSessions.get(sessionId));
+                } catch (Exception e) {
+                    Log.w(TAG, String.format(
+                            "Trouble trying to manage session %d, removing...", sessionId), e);
+                    mAudioSessions.remove(sessionId);
+                }
             }
         }
 
         // 调试，查看输出配置
         // 禁用此调试以获得更佳性能
         // Log.i(TAG,"Selected configuration: " + outPutMode);
+    }
+
+    // 构造运行方法
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        // 创建启动服务
+        // Starting service
+        IntentFilter audioFilter = new IntentFilter();
+        audioFilter.addAction(AudioEffect.ACTION_OPEN_AUDIO_EFFECT_CONTROL_SESSION);
+        audioFilter.addAction(AudioEffect.ACTION_CLOSE_AUDIO_EFFECT_CONTROL_SESSION);
+        registerReceiver(mAudioSessionReceiver, audioFilter);
+
+        // 耳机插入时意图过滤器
+        final IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(AudioManager.ACTION_HEADSET_PLUG);
+        intentFilter.addAction("android.intent.action.ANALOG_AUDIO_DOCK_PLUG");
+
+        // USB底座插入意图过滤器
+        final IntentFilter usbFilter = new IntentFilter();
+        usbFilter.addAction(UsbManager.ACTION_USB_DEVICE_ATTACHED);
+        usbFilter.addAction(UsbManager.ACTION_USB_DEVICE_DETACHED);
+
+
+        // 动态注册广播
+        registerReceiver(mRoutingReceiver, intentFilter);
+        registerReceiver(mUsbReceiver, usbFilter);
+        registerReceiver(mPreferenceUpdateReceiver, new IntentFilter(DSPManager.ACTION_UPDATE_PREFERENCES));
+
+        // 蓝牙
+        final IntentFilter btFilter = new IntentFilter();
+        btFilter.addAction(BluetoothA2dp.ACTION_CONNECTION_STATE_CHANGED);
+        btFilter.addAction(BluetoothAdapter.ACTION_STATE_CHANGED);
+        registerReceiver(mBtReceiver, btFilter);
+
+        // 查看&保存DSP全局设置
+        preferencesEffectMode = getSharedPreferences(DSPManager.SHARED_PREFERENCES_BASENAME + "." + "pref_settings", 0);
+        // 判断该文件里面有没有全局设置字样，没有就添加，并且默认模式为全局模式
+        if (!preferencesEffectMode.contains("dsp.manager.effectMode")) {
+            preferencesEffectMode.edit().putInt("dsp.manager.effectMode", 0).apply();
+        }
+        effectMode = preferencesEffectMode.getInt("dsp.manager.effectMode", 0);
+        if (mDSPEffect != null) {
+            mDSPEffect.release();
+            mDSPEffect = null;
+        }
+        if (effectMode == 0) {
+            if (mDSPEffect == null) {
+                mDSPEffect = new DSPModule(0);
+            }
+            if (mDSPEffect.DSP_Compression == null) {
+                Log.e(TAG,"DSPManager library load fail");
+                mDSPEffect.release();
+                mDSPEffect = null;
+            }
+        }
+        // 刷新dsp
+        updateDSP(true);
+    }
+
+    // 重写启动方法
+    @Override
+    public int onStartCommand(Intent intent, int flag, int startId) {
+        effectMode = preferencesEffectMode.getInt("dsp.manager.effectMode", 0);
+        if (effectMode == 0) {
+            if (mDSPEffect == null) {
+                mDSPEffect = new DSPModule(0);
+                if (mDSPEffect.DSP_Compression == null) {
+                    Log.e(TAG,"Global effect load fail, reloading");
+                    mDSPEffect.release();
+                    mDSPEffect = null;
+                    return super.onStartCommand(intent, flag, startId);
+                }
+                updateDSP(false);
+                return super.onStartCommand(intent, flag, startId);
+            }
+            if (mDSPEffect.DSP_Compression == null) {
+                Log.e(TAG,"Global effect load fail, reloading");
+                mDSPEffect.release();
+                mDSPEffect = new DSPModule(0);
+                if (mDSPEffect.DSP_Compression == null) {
+                    Log.e(TAG,"Global effect load fail, reloading");
+                    mDSPEffect.release();
+                    mDSPEffect = null;
+                    return super.onStartCommand(intent, flag, startId);
+                }
+                return super.onStartCommand(intent, flag, startId);
+            }
+            Log.i(TAG, "Global audio session created.");
+            updateDSP(false);
+        }
+        return super.onStartCommand(intent, flag, startId);
+    }
+
+    // 重写销毁方法
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        // 注销已注册的活动
+        unregisterReceiver(mAudioSessionReceiver);
+        unregisterReceiver(mRoutingReceiver);
+        unregisterReceiver(mUsbReceiver);
+        unregisterReceiver(mBtReceiver);
+        unregisterReceiver(mPreferenceUpdateReceiver);
+        mAudioSessions.clear();
+        if (mDSPEffect != null) {
+            mDSPEffect.release();
+        }
+        mDSPEffect = null;
     }
 
 }

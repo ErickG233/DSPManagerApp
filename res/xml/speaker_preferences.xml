@@ -1,15 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <PreferenceCategory android:title="@string/pref_dsp_master_switch_title">
-        <CheckBoxPreference
-            android:disableDependentsState="false"
-            android:key="dsp.masterswitch.enable"
-            android:summaryOn="@string/pref_dsp_master_switch_summary_on"
-            android:summaryOff="@string/pref_dsp_master_switch_summary_off"
-            android:title="@string/pref_dsp_master_switch_enable" />
-    </PreferenceCategory>
-
     <PreferenceCategory android:title="@string/pref_bassboost_title">
         <CheckBoxPreference
             android:disableDependentsState="false"

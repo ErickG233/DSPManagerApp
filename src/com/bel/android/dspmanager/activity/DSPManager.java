@@ -88,6 +88,8 @@ public final class  DSPManager extends Activity {
     private static final String PRESETS_FOLDER = "DSPPresets";
     // 音频输出类型（音频路由）
     private static int routing;
+    // 音频渲染模式
+    public static int effectMode;
     //==================================
     private static String[] mEntries;
     private static List<HashMap<String, String>> mTitles;
@@ -114,7 +116,7 @@ public final class  DSPManager extends Activity {
     //==================================
     // Fields
     //==================================
-    private SharedPreferences mPreferences;
+    private SharedPreferences mPreferences,preferencesEffectMode;
     private boolean mIsTabbed = true;
     private CharSequence mTitle;
 
@@ -168,9 +170,18 @@ public final class  DSPManager extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        // 音频输出配置
         mPreferences = getSharedPreferences(DSPManager.SHARED_PREFERENCES_BASENAME + "." + HeadsetService.getAudioOutputRouting(), 0);
         mUserLearnedDrawer = mPreferences.getBoolean(PREF_USER_LEARNED_DRAWER, false);
+
+        // 音频渲染模式，默认全局
+        // 获取渲染模式配置文件
+        preferencesEffectMode = getSharedPreferences(DSPManager.SHARED_PREFERENCES_BASENAME + "." + "pref_settings", 0);
+        // 判断该文件里面有没有全局设置字样，没有就添加，并且默认模式为全局模式
+        if (!preferencesEffectMode.contains("dsp.manager.effectMode")) {
+            preferencesEffectMode.edit().putInt("dsp.manager.effectMode", 0).apply();
+        }
+        effectMode = preferencesEffectMode.getInt("dsp.manager.effectMode", 0);
 
         // 调用权限获取方法
         // 判断当前系统版本
@@ -273,6 +284,18 @@ public final class  DSPManager extends Activity {
     }
 
     @Override
+    public boolean onPrepareOptionsMenu(Menu menu){
+        if (!isDrawerOpen()){
+            if (effectMode == 0) {
+                menu.findItem(R.id.dsp_effect_mode).setTitle(getString(R.string.dsp_effect_mode_title) + getString(R.string.dsp_effect_global)); // getString(R.string.dsp_effect_mode_title, getString(R.string.dsp_effect_global))
+            } else {
+                menu.findItem(R.id.dsp_effect_mode).setTitle(getString(R.string.dsp_effect_mode_title) + getString(R.string.dsp_effect_general)); // getString(R.string.dsp_effect_mode_title, getString(R.string.dsp_effect_general))
+            }
+        }
+        return super.onPrepareOptionsMenu(menu);
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (!mIsTabbed) {
             if (mDrawerToggle.onOptionsItemSelected(item)) {
@@ -295,6 +318,15 @@ public final class  DSPManager extends Activity {
 
             case R.id.load_preset:
                 loadPresetDialog();
+                return true;
+
+            case R.id.dsp_effect_mode:
+                effectMode++;
+                if (effectMode > 1)
+                    effectMode = 0;
+                preferencesEffectMode.edit().putInt("dsp.manager.effectMode", effectMode).apply();
+                Intent serviceIntent = new Intent(this, HeadsetService.class);
+                startService(serviceIntent);
                 return true;
 
             case R.id.dsp_action_tabbed:

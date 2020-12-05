@@ -107,14 +107,12 @@ public class EqualizerPreference extends DialogPreference {
     protected void onDialogClosed(boolean positiveResult) {
         if (positiveResult) {
             StringBuilder value = new StringBuilder();
-            for (int i = 0; i < 6; i++) {
-                // 添加保险，如果是最后的波段就不添加分隔符
-                if (i < 5) {
-                    value.append(String.format(Locale.ROOT, "%.1f", Math.round(mDialogEqualizer.getBand(i) * 10.f) / 10.f)).append(";");
-                } else {
-                    value.append(String.format(Locale.ROOT, "%.1f", Math.round(mDialogEqualizer.getBand(i) * 10.f) / 10.f));
-                }
+            int i = 0;
+            while (i < 5) {
+                value.append(String.format(Locale.ROOT, "%.1f", Math.round(mDialogEqualizer.getBand(i) * 10.f) / 10.f)).append(";");
+                ++i;
             }
+            value.append(String.format(Locale.ROOT, "%.1f", Math.round(mDialogEqualizer.getBand(i) * 10.f) / 10.f));
             persistString(value.toString());
             updateListEqualizerFromValue();
         }
