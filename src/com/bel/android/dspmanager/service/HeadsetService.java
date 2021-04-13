@@ -28,6 +28,9 @@ import androidx.annotation.Nullable;
 
 import com.bel.android.dspmanager.activity.DSPManager;
 
+import org.chickenhook.restrictionbypass.RestrictionBypass;
+
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -54,6 +57,13 @@ public class HeadsetService extends Service {
     public final static UUID EFFECT_TYPE_CUSTOM = UUID.fromString("09e8ede0-ddde-11db-b4f6-0002a5d5c51b");
     // DSP动态范围压缩唯一标识符
     public final static UUID EFFECT_DSP_COMPRESSION = UUID.fromString("c3b61114-def3-5a85-a39d-5cc4020ab8af");
+
+    // 测试 创建一个隐藏API访问
+
+    public static Method accessAPI(Object clazz, String name, Class<?>... args) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+        return RestrictionBypass.getDeclaredMethod(clazz, name, args);
+    }
+
 
     /**
      * 创建DSP模块
@@ -118,10 +128,12 @@ public class HeadsetService extends Service {
                         (byte) (value), (byte) (value >> 8)
                 };
 
-                Method setParameter = AudioEffect.class.getMethod(
-                        "setParameter", byte[].class, byte[].class);
-                setParameter.invoke(audioEffect,
-                        arguments, result);
+                // For API 21 to 29
+                // AudioEffect.class.getMethod("setParameter", byte[].class, byte[].class).invoke(audioEffect, arguments, result);
+
+                // For API 30 use ByPassMethod
+                accessAPI(AudioEffect.class,"setParameter",byte[].class, byte[].class).invoke(audioEffect, arguments, result);
+
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
