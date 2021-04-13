@@ -30,8 +30,6 @@ import com.bel.android.dspmanager.activity.DSPManager;
 
 import org.chickenhook.restrictionbypass.RestrictionBypass;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -58,12 +56,6 @@ public class HeadsetService extends Service {
     // DSP动态范围压缩唯一标识符
     public final static UUID EFFECT_DSP_COMPRESSION = UUID.fromString("c3b61114-def3-5a85-a39d-5cc4020ab8af");
 
-    // 测试 创建一个隐藏API访问
-
-    public static Method accessAPI(Object clazz, String name, Class<?>... args) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
-        return RestrictionBypass.getDeclaredMethod(clazz, name, args);
-    }
-
 
     /**
      * 创建DSP模块
@@ -73,20 +65,20 @@ public class HeadsetService extends Service {
     public static class DSPModule {
         // 实例四个音效
         public AudioEffect DSP_Compression;  // 动态范围压缩
-        private Equalizer mEqualizer;        // 均衡器
-        private BassBoost mBassBoost;        // 低频增益
-        private Virtualizer mVirtualizer;    // 空间混响
+        final Equalizer mEqualizer;        // 均衡器
+        final BassBoost mBassBoost;        // 低频增益
+        final Virtualizer mVirtualizer;    // 空间混响
 
         // 实例一个音效渲染
         public DSPModule(int sessionId) {
             try {
 
-                /**
-                 * AudioEffect constructor is not part of SDK. We use reflection
-                 * to access it.
-                 **/
+                /*
+                 AudioEffect constructor is not part of SDK. We use reflection
+                 to access it.
+                 */
 
-                DSP_Compression = AudioEffect.class.getConstructor(UUID.class, UUID.class, Integer.TYPE, Integer.TYPE)
+                DSP_Compression = AudioEffect.class.getDeclaredConstructor(UUID.class, UUID.class, Integer.TYPE, Integer.TYPE)
                         .newInstance(EFFECT_TYPE_CUSTOM, EFFECT_DSP_COMPRESSION, 0, sessionId);
 
                 mEqualizer = new Equalizer(0, sessionId);
@@ -111,11 +103,11 @@ public class HeadsetService extends Service {
         /**
          * Proxies call to AudioEffect.setParameter(byte[], byte[]) which is
          * available via reflection.
-         *
-         * @param audioEffect
-         * @param parameter
-         * @param value
-         */
+         * <p>
+         * param audioEffect
+         * param parameter
+         * param value
+         **/
 
         // 设定音效访问参数
         private void setParameter(AudioEffect audioEffect, int parameter, short value) {
@@ -132,7 +124,7 @@ public class HeadsetService extends Service {
                 // AudioEffect.class.getMethod("setParameter", byte[].class, byte[].class).invoke(audioEffect, arguments, result);
 
                 // For API 30 use ByPassMethod
-                accessAPI(AudioEffect.class,"setParameter",byte[].class, byte[].class).invoke(audioEffect, arguments, result);
+                RestrictionBypass.getMethod(AudioEffect.class, "setParameter", byte[].class, byte[].class).invoke(audioEffect, arguments, result);
 
             } catch (Exception e) {
                 throw new RuntimeException(e);
@@ -153,7 +145,7 @@ public class HeadsetService extends Service {
     /**
      * Known audio sessions and their associated audioeffect suites.
      */
-    private final Map<Integer, DSPModule> mAudioSessions = new HashMap<Integer, DSPModule>();
+    private final Map<Integer, DSPModule> mAudioSessions = new HashMap<>();
 
     // 组件：输出模式检测，检测扬声器，耳机，蓝牙，usb底座
 
@@ -206,24 +198,24 @@ public class HeadsetService extends Service {
                     return;
                 }
                 if (!mAudioSessions.containsKey(sessionId)) {
-                    DSPModule prevDSP_Module = new DSPModule(sessionId);
-                    if (prevDSP_Module.DSP_Compression == null) {
+                    mDSPEffect = new DSPModule(sessionId);
+                    if (mDSPEffect.DSP_Compression == null) {
                         Log.e(TAG, "Sound effect create fail");
-                        prevDSP_Module.release();
-                        prevDSP_Module = null;
+                        mDSPEffect.release();
+                        mDSPEffect = null;
                     } else {
-                        mAudioSessions.put(sessionId, prevDSP_Module);
+                        mAudioSessions.put(sessionId, mDSPEffect);
                     }
                     updateDSP(false);
                 }
             }
             // 关闭音效控制时的清理工作
             if (AudioEffect.ACTION_CLOSE_AUDIO_EFFECT_CONTROL_SESSION.equals(action)) {
-                DSPModule prevDSP_Module = mAudioSessions.remove(sessionId);
-                if (prevDSP_Module != null) {
-                    prevDSP_Module.release();
+                mDSPEffect = mAudioSessions.remove(sessionId);
+                if (mDSPEffect != null) {
+                    mDSPEffect.release();
                 }
-                prevDSP_Module = null;
+                mDSPEffect = null;
             }
         }
     };
@@ -251,7 +243,7 @@ public class HeadsetService extends Service {
     // 耳机
     private final BroadcastReceiver mRoutingReceiver = new BroadcastReceiver() {
         @Override
-        public void onReceive(final Context context,final Intent intent) {
+        public void onReceive(final Context context, final Intent intent) {
             final String action = intent.getAction();
             // 添加一个临时的耳机插入检测
             final boolean prevUseHeadset = mUseHeadset;
@@ -273,7 +265,7 @@ public class HeadsetService extends Service {
     // 蓝牙
     private final BroadcastReceiver mBtReceiver = new BroadcastReceiver() {
         @Override
-        public void onReceive(final Context context,final Intent intent) {
+        public void onReceive(final Context context, final Intent intent) {
             final String action = intent.getAction();
             if (BluetoothA2dp.ACTION_CONNECTION_STATE_CHANGED.equals(action)) {
                 int state = intent.getIntExtra(BluetoothProfile.EXTRA_STATE,
@@ -307,7 +299,7 @@ public class HeadsetService extends Service {
     // USB底座
     private final BroadcastReceiver mUsbReceiver = new BroadcastReceiver() {
         @Override
-        public void onReceive(final Context context,final Intent intent) {
+        public void onReceive(final Context context, final Intent intent) {
             final String action = intent.getAction();
             final boolean prevUseUSB = mUseUsb;
             if (UsbManager.ACTION_USB_DEVICE_ATTACHED.equals(action)) {
@@ -351,8 +343,8 @@ public class HeadsetService extends Service {
     /**
      * Gain temporary control over the global equalizer.
      * Used by DSPManager when testing a new equalizer setting.
-     *
-     * @param levels
+     * <p>
+     * param levels
      */
 
     // 创建修改均衡器频段方法
@@ -364,7 +356,7 @@ public class HeadsetService extends Service {
     }
 
     // 创建均衡器波段控制条
-    private float[] eqLevels = new float[6];
+    private final float[] eqLevels = new float[6];
 
     /**
      * There appears to be no way to find out what the current actual audio routing is.
@@ -479,7 +471,7 @@ public class HeadsetService extends Service {
                 Log.e(TAG, "Could not effect audio.", e);
             }
         } else {
-            for (Integer sessionId : new ArrayList<Integer>(mAudioSessions.keySet())){
+            for (Integer sessionId : new ArrayList<>(mAudioSessions.keySet())) {
                 try {
                     updateDSPEffect(sharedPreferences, mAudioSessions.get(sessionId));
                 } catch (Exception e) {
@@ -544,7 +536,7 @@ public class HeadsetService extends Service {
                 mDSPEffect = new DSPModule(0);
             }
             if (mDSPEffect.DSP_Compression == null) {
-                Log.e(TAG,"DSPManager library load fail");
+                Log.e(TAG, "DSPManager library load fail");
                 mDSPEffect.release();
                 mDSPEffect = null;
             }
@@ -561,7 +553,7 @@ public class HeadsetService extends Service {
             if (mDSPEffect == null) {
                 mDSPEffect = new DSPModule(0);
                 if (mDSPEffect.DSP_Compression == null) {
-                    Log.e(TAG,"Global effect load fail, reloading");
+                    Log.e(TAG, "Global effect load fail, reloading");
                     mDSPEffect.release();
                     mDSPEffect = null;
                     return super.onStartCommand(intent, flag, startId);
@@ -570,11 +562,11 @@ public class HeadsetService extends Service {
                 return super.onStartCommand(intent, flag, startId);
             }
             if (mDSPEffect.DSP_Compression == null) {
-                Log.e(TAG,"Global effect load fail, reloading");
+                Log.e(TAG, "Global effect load fail, reloading");
                 mDSPEffect.release();
                 mDSPEffect = new DSPModule(0);
                 if (mDSPEffect.DSP_Compression == null) {
-                    Log.e(TAG,"Global effect load fail, reloading");
+                    Log.e(TAG, "Global effect load fail, reloading");
                     mDSPEffect.release();
                     mDSPEffect = null;
                     return super.onStartCommand(intent, flag, startId);
