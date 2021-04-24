@@ -51,23 +51,23 @@ public class HeadsetService extends Service {
     // 设定音效标签
     static final String TAG = "DSPManager";
 
-    // 音效模块依赖库唯一标识符
-    public final static UUID EFFECT_TYPE_CUSTOM = UUID.fromString("09e8ede0-ddde-11db-b4f6-0002a5d5c51b");
-    // DSP动态范围压缩唯一标识符
-    public final static UUID EFFECT_DSP_COMPRESSION = UUID.fromString("c3b61114-def3-5a85-a39d-5cc4020ab8af");
-
-
     /**
      * 创建DSP模块
      * 静态类
      **/
 
     public static class DSPModule {
+
+        // 音效模块依赖库唯一标识符
+        public final static UUID EFFECT_TYPE_CUSTOM = UUID.fromString("09e8ede0-ddde-11db-b4f6-0002a5d5c51b");
+        // DSP动态范围压缩唯一标识符
+        public final static UUID EFFECT_DSP_COMPRESSION = UUID.fromString("c3b61114-def3-5a85-a39d-5cc4020ab8af");
+        
         // 实例四个音效
         public AudioEffect DSP_Compression;  // 动态范围压缩
-        final Equalizer mEqualizer;        // 均衡器
-        final BassBoost mBassBoost;        // 低频增益
-        final Virtualizer mVirtualizer;    // 空间混响
+        public Equalizer mEqualizer;        // 均衡器
+        public BassBoost mBassBoost;        // 低频增益
+        public Virtualizer mVirtualizer;    // 空间混响
 
         // 实例一个音效渲染
         public DSPModule(int sessionId) {
@@ -81,10 +81,9 @@ public class HeadsetService extends Service {
                 DSP_Compression = AudioEffect.class.getDeclaredConstructor(UUID.class, UUID.class, Integer.TYPE, Integer.TYPE)
                         .newInstance(EFFECT_TYPE_CUSTOM, EFFECT_DSP_COMPRESSION, 0, sessionId);
 
-                mEqualizer = new Equalizer(0, sessionId);
-                mBassBoost = new BassBoost(0, sessionId);
-                mVirtualizer = new Virtualizer(0, sessionId);
-
+                mEqualizer = new Equalizer(0, sessionId);   // 已将均衡器关联
+                mBassBoost = new BassBoost(0, sessionId);   // 已将动态低频关联
+                mVirtualizer = new Virtualizer(0, sessionId);   // 已将混响关联
 
             } catch (Exception e) {
                 // 运行异常抛出
@@ -170,19 +169,22 @@ public class HeadsetService extends Service {
      * Has DSPManager assumed control of equalizer levels?
      */
     // DSP管理器控制音频波段调整
-    private float[] mOverriddenEqualizerLevels;
+    private static float[] mOverriddenEqualizerLevels;
 
     /**
      * Receive new broadcast intents for adding DSP to session
      */
     // 创建广播接收器
 
-    // 实例音效
-    private DSPModule mDSPEffect;
-    // 添加音效模式
+    // 实例音效(因为频繁访问所以使用静态变量)
+    private static DSPModule mDSPEffect;
+    // 添加音效模式(因为频繁访问所以使用静态变量)
     public static int effectMode;
-    // 添加音效模式的配置
-    private SharedPreferences preferencesEffectMode;
+    // 添加音效模式的配置(因为频繁访问所以使用静态变量)
+    private static SharedPreferences preferencesEffectMode;
+
+
+
     // 音效广播接收器
     private final BroadcastReceiver mAudioSessionReceiver = new BroadcastReceiver() {
         @Override
@@ -532,9 +534,7 @@ public class HeadsetService extends Service {
             mDSPEffect = null;
         }
         if (effectMode == 0) {
-            if (mDSPEffect == null) {
-                mDSPEffect = new DSPModule(0);
-            }
+            mDSPEffect = new DSPModule(0);
             if (mDSPEffect.DSP_Compression == null) {
                 Log.e(TAG, "DSPManager library load fail");
                 mDSPEffect.release();
