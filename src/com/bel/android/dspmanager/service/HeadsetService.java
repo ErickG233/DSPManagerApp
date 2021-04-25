@@ -16,9 +16,6 @@ import android.hardware.usb.UsbInterface;
 import android.hardware.usb.UsbManager;
 import android.media.AudioManager;
 import android.media.audiofx.AudioEffect;
-import android.media.audiofx.BassBoost;
-import android.media.audiofx.Equalizer;
-import android.media.audiofx.Virtualizer;
 import android.os.Binder;
 import android.os.Build;
 import android.os.IBinder;
@@ -27,13 +24,11 @@ import android.util.Log;
 import androidx.annotation.Nullable;
 
 import com.bel.android.dspmanager.activity.DSPManager;
-
-import org.chickenhook.restrictionbypass.RestrictionBypass;
+import com.bel.android.dspmanager.effectmodule.DSPModule;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 /**
  * <p>This calls listen to events that affect DSP function and responds to them.</p>
@@ -51,86 +46,6 @@ public class HeadsetService extends Service {
     // 设定音效标签
     static final String TAG = "DSPManager";
 
-    /**
-     * 创建DSP模块
-     * 静态类
-     **/
-
-    public static class DSPModule {
-
-        // 音效模块依赖库唯一标识符
-        public final static UUID EFFECT_TYPE_CUSTOM = UUID.fromString("09e8ede0-ddde-11db-b4f6-0002a5d5c51b");
-        // DSP动态范围压缩唯一标识符
-        public final static UUID EFFECT_DSP_COMPRESSION = UUID.fromString("c3b61114-def3-5a85-a39d-5cc4020ab8af");
-        
-        // 实例四个音效
-        public AudioEffect DSP_Compression;  // 动态范围压缩
-        public Equalizer mEqualizer;        // 均衡器
-        public BassBoost mBassBoost;        // 低频增益
-        public Virtualizer mVirtualizer;    // 空间混响
-
-        // 实例一个音效渲染
-        public DSPModule(int sessionId) {
-            try {
-
-                /*
-                 AudioEffect constructor is not part of SDK. We use reflection
-                 to access it.
-                 */
-
-                DSP_Compression = AudioEffect.class.getDeclaredConstructor(UUID.class, UUID.class, Integer.TYPE, Integer.TYPE)
-                        .newInstance(EFFECT_TYPE_CUSTOM, EFFECT_DSP_COMPRESSION, 0, sessionId);
-
-                mEqualizer = new Equalizer(0, sessionId);   // 已将均衡器关联
-                mBassBoost = new BassBoost(0, sessionId);   // 已将动态低频关联
-                mVirtualizer = new Virtualizer(0, sessionId);   // 已将混响关联
-
-            } catch (Exception e) {
-                // 运行异常抛出
-                throw new RuntimeException(e);
-            }
-        }
-
-        // 音效释放
-        public void release() {
-            DSP_Compression.release();
-            mBassBoost.release();
-            mEqualizer.release();
-            mVirtualizer.release();
-        }
-
-        /**
-         * Proxies call to AudioEffect.setParameter(byte[], byte[]) which is
-         * available via reflection.
-         * <p>
-         * param audioEffect
-         * param parameter
-         * param value
-         **/
-
-        // 设定音效访问参数
-        private void setParameter(AudioEffect audioEffect, int parameter, short value) {
-            try {
-                byte[] arguments = new byte[]{
-                        (byte) (parameter), (byte) (parameter >> 8),
-                        (byte) (parameter >> 16), (byte) (parameter >> 24)
-                };
-                byte[] result = new byte[]{
-                        (byte) (value), (byte) (value >> 8)
-                };
-
-                // For API 21 to 29
-                // AudioEffect.class.getMethod("setParameter", byte[].class, byte[].class).invoke(audioEffect, arguments, result);
-
-                // For API 30 use ByPassMethod
-                RestrictionBypass.getMethod(AudioEffect.class, "setParameter", byte[].class, byte[].class).invoke(audioEffect, arguments, result);
-
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        }
-
-    }
 
     // 创建进程间通信
     public class LocalBinder extends Binder {
@@ -357,9 +272,6 @@ public class HeadsetService extends Service {
         updateDSP(false);
     }
 
-    // 创建均衡器波段控制条
-    private final float[] eqLevels = new float[6];
-
     /**
      * There appears to be no way to find out what the current actual audio routing is.
      * For instance, if a wired headset is plugged in, the following objects/classes are involved:</p>
@@ -421,14 +333,12 @@ public class HeadsetService extends Service {
         session.mEqualizer.setEnabled(preferences.getBoolean("dsp.tone.enable", false));
         if (mOverriddenEqualizerLevels != null) {
             for (short i = 0; i < mOverriddenEqualizerLevels.length; i++) {
-                eqLevels[i] = mOverriddenEqualizerLevels[i];
-                session.mEqualizer.setBandLevel(i, (short) Math.round(eqLevels[i] * 100));
+                session.mEqualizer.setBandLevel(i, (short) Math.round(mOverriddenEqualizerLevels[i] * 100));
             }
         } else {
             String[] levels = preferences.getString("dsp.tone.eq.custom", "0.0;0.0;0.0;0.0;0.0;0.0").split(";");
             for (short i = 0; i < levels.length; i++) {
-                eqLevels[i] = Float.parseFloat(levels[i]);
-                session.mEqualizer.setBandLevel(i, (short) Math.round(eqLevels[i] * 100));
+                session.mEqualizer.setBandLevel(i, (short) Math.round(Float.parseFloat(levels[i]) * 100));
             }
         }
         // 响度补偿
