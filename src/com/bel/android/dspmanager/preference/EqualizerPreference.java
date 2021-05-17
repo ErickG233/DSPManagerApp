@@ -13,6 +13,7 @@ import android.view.MotionEvent;
 import android.view.View;
 
 import com.bel.android.dspmanager.R;
+import com.bel.android.dspmanager.activity.DSPManager;
 import com.bel.android.dspmanager.service.HeadsetService;
 
 import java.util.Locale;
@@ -44,13 +45,28 @@ public class EqualizerPreference extends DialogPreference {
         setDialogLayoutResource(R.layout.equalizer_popup);
     }
 
+    // 获取对应传递过来的页面设定对应的配置作为判断用
+    private static String getPage() {
+        if (DSPManager.manualPosition == 1) {
+            return "speaker";
+        }else if (DSPManager.manualPosition == 2) {
+            return "bluetooth";
+        } else if (DSPManager.manualPosition == 3) {
+            return "usb";
+        } else {
+            return "headset";
+        }
+    }
+
     protected void updateDspFromDialogEqualizer() {
         if (mHeadsetService != null) {
             float[] levels = new float[6];
             for (int i = 0; i < levels.length; i++) {
                 levels[i] = mDialogEqualizer.getBand(i);
             }
-            mHeadsetService.setEqualizerLevels(levels);
+            if (HeadsetService.getAudioOutputRouting().equals(getPage())) {
+                mHeadsetService.setEqualizerLevels(levels);
+            }
         }
     }
 

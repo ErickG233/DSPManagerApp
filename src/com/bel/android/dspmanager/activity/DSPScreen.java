@@ -24,11 +24,24 @@ import com.bel.android.dspmanager.service.HeadsetService;
 public final class DSPScreen extends PreferenceFragment {
     protected static final String TAG = DSPScreen.class.getSimpleName();
 
+    // 获取对应传递过来的页面设定对应的配置作为判断用
+    private static String getPage() {
+        if (DSPManager.manualPosition == 1) {
+            return "speaker";
+        }else if (DSPManager.manualPosition == 2) {
+            return "bluetooth";
+        } else if (DSPManager.manualPosition == 3) {
+            return "usb";
+        } else {
+            return "headset";
+        }
+    }
+
     private final OnSharedPreferenceChangeListener listener = new OnSharedPreferenceChangeListener() {
         @Override
         public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
             /* If the listpref is updated, copy the changed setting to the eq. */
-            if ("dsp.tone.eq".equals(key)) {
+            if (("dsp." + getPage() + ".tone.eq").equals(key)) {
                 String newValue = sharedPreferences.getString(key, null);
                 if (!"custom".equals(newValue)) {
                     Editor e = sharedPreferences.edit();
@@ -48,7 +61,7 @@ public final class DSPScreen extends PreferenceFragment {
 
                 String desiredValue = "custom";
                 SummariedListPreference preset = (SummariedListPreference)
-                        getPreferenceScreen().findPreference("dsp.tone.eq");
+                        getPreferenceScreen().findPreference("dsp." + getPage() + ".tone.eq");
                 for (CharSequence entry : preset.getEntryValues()) {
                     if (entry.equals(newValue)) {
                         desiredValue = newValue;
@@ -59,7 +72,7 @@ public final class DSPScreen extends PreferenceFragment {
                 /* Tell listpreference that it must display something else. */
                 if (!preset.getEntry().equals(desiredValue)) {
                     Editor e = sharedPreferences.edit();
-                    e.putString("dsp.tone.eq", desiredValue);
+                    e.putString("dsp." + getPage() + ".tone.eq", desiredValue);
                     e.apply();
                     preset.refreshFromPreference();
                 }
