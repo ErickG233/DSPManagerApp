@@ -4,7 +4,22 @@ import android.content.Context;
 import android.preference.EditTextPreference;
 import android.util.AttributeSet;
 
+import com.bel.android.dspmanager.activity.DSPManager;
+
 public class SummariedTextPreference extends EditTextPreference {
+
+    // 获取对应传递过来的页面设定对应的Key
+    private static String getPage() {
+        if (DSPManager.manualPosition == 1) {
+            return "speaker";
+        }else if (DSPManager.manualPosition == 2) {
+            return "bluetooth";
+        } else if (DSPManager.manualPosition == 3) {
+            return "usb";
+        } else {
+            return "headset";
+        }
+    }
 
     public SummariedTextPreference(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -18,7 +33,7 @@ public class SummariedTextPreference extends EditTextPreference {
         catch (NumberFormatException e){
             // NULL
         }
-        if(getKey().equals("dsp.bassboost.freq")){
+        if(getKey().equals("dsp." + getPage() +".bassboost.freq")){
             if(valueFloat < 20.0f){
                 value = "20";
             }

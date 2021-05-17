@@ -44,8 +44,7 @@ import java.util.Map;
 public class HeadsetService extends Service {
 
     // 设定音效标签
-    static final String TAG = "DSPManager";
-
+    private static final String TAG = "DSPManager";
 
     // 创建进程间通信
     public class LocalBinder extends Binder {
@@ -91,14 +90,12 @@ public class HeadsetService extends Service {
      */
     // 创建广播接收器
 
-    // 实例音效(因为频繁访问所以使用静态变量)
-    private static DSPModule mDSPEffect;
+    // 实例音效
+    public static DSPModule mDSPEffect;
     // 添加音效模式(因为频繁访问所以使用静态变量)
     public static int effectMode;
-    // 添加音效模式的配置(因为频繁访问所以使用静态变量)
-    private static SharedPreferences preferencesEffectMode;
-
-
+    // 添加音效模式的配置
+    private SharedPreferences preferencesEffectMode;
 
     // 音效广播接收器
     private final BroadcastReceiver mAudioSessionReceiver = new BroadcastReceiver() {
@@ -115,24 +112,24 @@ public class HeadsetService extends Service {
                     return;
                 }
                 if (!mAudioSessions.containsKey(sessionId)) {
-                    mDSPEffect = new DSPModule(sessionId);
-                    if (mDSPEffect.DSP_Compression == null) {
+                    DSPModule prevDSP_Module = new DSPModule(sessionId);
+                    if (prevDSP_Module.DSP_Compression == null) {
                         Log.e(TAG, "Sound effect create fail");
-                        mDSPEffect.release();
-                        mDSPEffect = null;
+                        prevDSP_Module.release();
+                        // prevDSP_Module = null;
                     } else {
-                        mAudioSessions.put(sessionId, mDSPEffect);
+                        mAudioSessions.put(sessionId, prevDSP_Module);
                     }
                     updateDSP(false);
                 }
             }
             // 关闭音效控制时的清理工作
             if (AudioEffect.ACTION_CLOSE_AUDIO_EFFECT_CONTROL_SESSION.equals(action)) {
-                mDSPEffect = mAudioSessions.remove(sessionId);
-                if (mDSPEffect != null) {
-                    mDSPEffect.release();
+                DSPModule prevDSP_Module = mAudioSessions.remove(sessionId);
+                if (prevDSP_Module != null) {
+                    prevDSP_Module.release();
+                    // prevDSP_Module = null;
                 }
-                mDSPEffect = null;
             }
         }
     };
@@ -314,40 +311,39 @@ public class HeadsetService extends Service {
 
     // 添加音效渲染的方法
     // 这里后期可能需要sessionId判断音效是否开启
-    private void updateDSPEffect(SharedPreferences preferences, DSPModule session) {
+    // 查找正确的页面配置避免冲突
+    private void updateDSPEffect(SharedPreferences preferences, DSPModule session, String OutPutMode) {
 
         // 动态范围压缩
-        session.DSP_Compression.setEnabled(preferences.getBoolean("dsp.compression.enable", false));
-        mDSPEffect.setParameter(session.DSP_Compression, 0,
-                Short.parseShort(preferences.getString("dsp.compression.mode", "0")));
+        session.DSP_Compression.setEnabled(preferences.getBoolean("dsp." + OutPutMode + ".compression.enable", false));
+        DSPModule.setParameter(session.DSP_Compression, 0,
+                Short.parseShort(preferences.getString("dsp." + OutPutMode + ".compression.mode", "0")));
 
         // 低音增益
-        session.mBassBoost.setEnabled(preferences.getBoolean("dsp.bass.enable", false));
-        session.mBassBoost.setStrength(Short.parseShort(preferences.getString("dsp.bass.mode", "0")));
+        session.DSP_BassBoost.setEnabled(preferences.getBoolean("dsp." + OutPutMode + ".bass.enable", false));
+        DSPModule.setParameter(session.DSP_BassBoost, 1, Short.parseShort(preferences.getString("dsp." + OutPutMode + ".bass.mode", "0")));
 
         // 低音频点
-        short freq = Short.parseShort(preferences.getString("dsp.bassboost.freq", "55"));
-        session.setParameter(session.mBassBoost, 133, freq);
+        DSPModule.setParameter(session.DSP_BassBoost, 133, Short.parseShort(preferences.getString("dsp." + OutPutMode + ".bassboost.freq", "55")));
 
         // 均衡器频段
-        session.mEqualizer.setEnabled(preferences.getBoolean("dsp.tone.enable", false));
+        session.DSP_Equalizer.setEnabled(preferences.getBoolean("dsp." + OutPutMode + ".tone.enable", false));
         if (mOverriddenEqualizerLevels != null) {
-            for (short i = 0; i < mOverriddenEqualizerLevels.length; i++) {
-                session.mEqualizer.setBandLevel(i, (short) Math.round(mOverriddenEqualizerLevels[i] * 100));
+            for (int i = 0; i < mOverriddenEqualizerLevels.length; i++) {
+                DSPModule.setParameterEqualizer(session.DSP_Equalizer, i, (short) Math.round(mOverriddenEqualizerLevels[i] * 100));
             }
         } else {
-            String[] levels = preferences.getString("dsp.tone.eq.custom", "0.0;0.0;0.0;0.0;0.0;0.0").split(";");
-            for (short i = 0; i < levels.length; i++) {
-                session.mEqualizer.setBandLevel(i, (short) Math.round(Float.parseFloat(levels[i]) * 100));
+            String[] levels = preferences.getString("dsp." + OutPutMode + ".tone.eq.custom", "0.0;0.0;0.0;0.0;0.0;0.0").split(";");
+            for (int i = 0; i < levels.length; i++) {
+                DSPModule.setParameterEqualizer(session.DSP_Equalizer, i, (short) Math.round(Float.parseFloat(levels[i]) * 100));
             }
         }
         // 响度补偿
-        mDSPEffect.setParameter(session.mEqualizer, 1000, Short.parseShort(preferences.getString("dsp.tone.loudness", "10000")));
+        DSPModule.setParameter(session.DSP_Equalizer, 1000, Short.parseShort(preferences.getString("dsp." + OutPutMode + ".tone.loudness", "10000")));
 
         // 空间混响
-        session.mVirtualizer.setEnabled(preferences.getBoolean("dsp.headphone.enable", false));
-        session.mVirtualizer.setStrength(
-                Short.parseShort(preferences.getString("dsp.headphone.mode", "0")));
+        session.DSP_Virtualizer.setEnabled(preferences.getBoolean("dsp." + OutPutMode + ".headphone.enable", false));
+        DSPModule.setParameter(session.DSP_Virtualizer,1, Short.parseShort(preferences.getString("dsp."+ OutPutMode + ".headphone.mode", "0")));
 
     }
 
@@ -378,14 +374,14 @@ public class HeadsetService extends Service {
         if (effectMode == 0) {
             // 全局音效渲染
             try {
-                updateDSPEffect(sharedPreferences, mDSPEffect);
+                updateDSPEffect(sharedPreferences, mDSPEffect, outPutMode);
             } catch (Exception e) {
                 Log.e(TAG, "Could not effect audio.", e);
             }
         } else {
             for (Integer sessionId : new ArrayList<>(mAudioSessions.keySet())) {
                 try {
-                    updateDSPEffect(sharedPreferences, mAudioSessions.get(sessionId));
+                    updateDSPEffect(sharedPreferences, mAudioSessions.get(sessionId), outPutMode);
                 } catch (Exception e) {
                     Log.w(TAG, String.format(
                             "Trouble trying to manage session %d, removing...", sessionId), e);
@@ -439,12 +435,14 @@ public class HeadsetService extends Service {
             preferencesEffectMode.edit().putInt("dsp.manager.effectMode", 0).apply();
         }
         effectMode = preferencesEffectMode.getInt("dsp.manager.effectMode", 0);
-        if (mDSPEffect != null) {
-            mDSPEffect.release();
-            mDSPEffect = null;
-        }
         if (effectMode == 0) {
-            mDSPEffect = new DSPModule(0);
+            if (mDSPEffect != null) {
+                mDSPEffect.release();
+                mDSPEffect = null;
+            }
+            if (mDSPEffect == null){
+                mDSPEffect = new DSPModule(0);
+            }
             if (mDSPEffect.DSP_Compression == null) {
                 Log.e(TAG, "DSPManager library load fail");
                 mDSPEffect.release();
@@ -502,8 +500,8 @@ public class HeadsetService extends Service {
         mAudioSessions.clear();
         if (mDSPEffect != null) {
             mDSPEffect.release();
+            mDSPEffect = null;
         }
-        mDSPEffect = null;
     }
 
 }

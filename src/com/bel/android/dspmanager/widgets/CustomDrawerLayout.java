@@ -5,8 +5,6 @@ import android.util.AttributeSet;
 
 import androidx.drawerlayout.widget.DrawerLayout;
 
-//import android.support.v4.widget.DrawerLayout;
-
 public class CustomDrawerLayout extends DrawerLayout {
 
     public CustomDrawerLayout(Context context) {

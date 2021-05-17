@@ -44,6 +44,7 @@ import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -88,6 +89,8 @@ public final class  DSPManager extends Activity {
     private static final String PRESETS_FOLDER = "DSPPresets";
     // 音频输出类型（音频路由）
     private static int routing;
+    // 人为跳转
+    public static int manualPosition;
     // 音频渲染模式
     public static int effectMode;
     //==================================
@@ -126,8 +129,8 @@ public final class  DSPManager extends Activity {
         List<String> permissionLists = new ArrayList<>();
         // 添加权限获取弹窗
         // 存储权限
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
-            permissionLists.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
+            permissionLists.add(Manifest.permission.READ_EXTERNAL_STORAGE);
             //ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
         }
         // 电话权限
@@ -137,7 +140,7 @@ public final class  DSPManager extends Activity {
         }
         // requestCode = 1 开启权限
         if (!permissionLists.isEmpty()){
-            ActivityCompat.requestPermissions(this,permissionLists.toArray(new String[permissionLists.size()]),1);
+            ActivityCompat.requestPermissions(this,permissionLists.toArray(new String[0]),1);
         }
     }
 
@@ -227,6 +230,8 @@ public final class  DSPManager extends Activity {
             } else {
                 routing = 1;
         }
+        // 让手动界面的值与当前页面值相等
+        manualPosition = routing;
         selectItem(routing);
     }
 
@@ -252,7 +257,7 @@ public final class  DSPManager extends Activity {
     }
 
     @Override
-    public void onConfigurationChanged(Configuration newConfig) {
+    public void onConfigurationChanged(@NonNull Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         if (!mIsTabbed) {
             mDrawerToggle.onConfigurationChanged(newConfig);
@@ -260,7 +265,7 @@ public final class  DSPManager extends Activity {
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState) {
+    public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         if (!mIsTabbed) {
             outState.putInt(STATE_SELECTED_POSITION, mCurrentSelectedPosition);
@@ -270,7 +275,7 @@ public final class  DSPManager extends Activity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        if (!isDrawerOpen()) {
+        if (isDrawerClose()) {
             getMenuInflater().inflate(mIsTabbed ? R.menu.menu_tabbed : R.menu.menu, menu);
             if (!getResources().getBoolean(R.bool.config_allow_toggle_tabbed)) {
                 menu.removeItem(R.id.dsp_action_tabbed);
@@ -285,58 +290,57 @@ public final class  DSPManager extends Activity {
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu){
-        if (!isDrawerOpen()){
+        if (isDrawerClose()){
             if (effectMode == 0) {
-                menu.findItem(R.id.dsp_effect_mode).setTitle(getString(R.string.dsp_effect_mode_title) + getString(R.string.dsp_effect_global)); // getString(R.string.dsp_effect_mode_title, getString(R.string.dsp_effect_global))
+                menu.findItem(R.id.dsp_effect_mode).setTitle(getString(R.string.dsp_effect_mode_title) + getString(R.string.dsp_effect_global));
             } else {
-                menu.findItem(R.id.dsp_effect_mode).setTitle(getString(R.string.dsp_effect_mode_title) + getString(R.string.dsp_effect_general)); // getString(R.string.dsp_effect_mode_title, getString(R.string.dsp_effect_general))
+                menu.findItem(R.id.dsp_effect_mode).setTitle(getString(R.string.dsp_effect_mode_title) + getString(R.string.dsp_effect_general));
             }
         }
         return super.onPrepareOptionsMenu(menu);
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (!mIsTabbed) {
             if (mDrawerToggle.onOptionsItemSelected(item)) {
                 return true;
             }
         }
 
-
         int choice = item.getItemId();
-        switch (choice) {
-            case R.id.help:
-                DialogFragment df = new HelpFragment();
-                df.setStyle(DialogFragment.STYLE_NO_TITLE, 0);
-                df.show(getFragmentManager(), "help");
-                return true;
-
-            case R.id.save_preset:
-                savePresetDialog();
-                return true;
-
-            case R.id.load_preset:
-                loadPresetDialog();
-                return true;
-
-            case R.id.dsp_effect_mode:
-                effectMode++;
-                if (effectMode > 1)
-                    effectMode = 0;
-                preferencesEffectMode.edit().putInt("dsp.manager.effectMode", effectMode).apply();
-                Intent serviceIntent = new Intent(this, HeadsetService.class);
-                startService(serviceIntent);
-                return true;
-
-            case R.id.dsp_action_tabbed:
-                mIsTabbed = !mIsTabbed;
-                mPreferences.edit().putBoolean(PREF_IS_TABBED, mIsTabbed).apply();
-                return true;
-
-            default:
-                return false;
+        if (choice == R.id.help) {
+            DialogFragment df = new HelpFragment();
+            df.setStyle(DialogFragment.STYLE_NO_TITLE, 0);
+            df.show(getFragmentManager(), "help");
+            return true;
         }
+        else if (choice == R.id.save_preset) {
+            savePresetDialog();
+            return true;
+        }
+        else if (choice == R.id.load_preset) {
+            loadPresetDialog();
+            return true;
+        }
+        else if (choice == R.id.dsp_effect_mode) {
+            effectMode++;
+            if (effectMode > 1)
+                effectMode = 0;
+            preferencesEffectMode.edit().putInt("dsp.manager.effectMode", effectMode).apply();
+            Intent serviceIntent = new Intent(this, HeadsetService.class);
+            startService(serviceIntent);
+            return true;
+        }
+        else if (choice == R.id.dsp_action_tabbed) {
+            mIsTabbed = !mIsTabbed;
+            mPreferences.edit().putBoolean(PREF_IS_TABBED, mIsTabbed).apply();
+            return true;
+        }
+        else {
+            return false;
+        }
+
     }
 
     //==================================
@@ -354,6 +358,8 @@ public final class  DSPManager extends Activity {
             mDrawerListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    // 传送intent
+                    manualPosition = position;
                     selectItem(position);
                 }
             });
@@ -381,7 +387,7 @@ public final class  DSPManager extends Activity {
 
             pagerTabStrip.setDrawFullUnderline(true);
             pagerTabStrip.setTabIndicatorColor(
-                    getResources().getColor(android.R.color.holo_blue_light));
+                    ContextCompat.getColor(this, android.R.color.holo_blue_light));
 
         }
     }
@@ -642,8 +648,8 @@ public final class  DSPManager extends Activity {
         selectItem(mCurrentSelectedPosition);
     }
 
-    public boolean isDrawerOpen() {
-        return mDrawerLayout != null && mDrawerLayout.isDrawerOpen(mFragmentContainerView);
+    public boolean isDrawerClose() {
+        return mDrawerLayout == null || !mDrawerLayout.isDrawerOpen(mFragmentContainerView);
     }
 
     private void selectItem(int position) {
@@ -669,24 +675,24 @@ public final class  DSPManager extends Activity {
     // 音频输出设备，音效配置页面
     private List<HashMap<String, String>> getTitles() {
         // TODO: use real drawables
-        ArrayList<HashMap<String, String>> tmpList = new ArrayList<HashMap<String, String>>();
+        ArrayList<HashMap<String, String>> tmpList = new ArrayList<>();
         // Headset
-        HashMap<String, String> mTitleMap = new HashMap<String, String>();
+        HashMap<String, String> mTitleMap = new HashMap<>();
         mTitleMap.put("ICON", R.drawable.empty_icon + "");
         mTitleMap.put("TITLE", getString(R.string.headset_title));
         tmpList.add(mTitleMap);
         // Speaker
-        mTitleMap = new HashMap<String, String>();
+        mTitleMap = new HashMap<>();
         mTitleMap.put("ICON", R.drawable.empty_icon + "");
         mTitleMap.put("TITLE", getString(R.string.speaker_title));
         tmpList.add(mTitleMap);
         // Bluetooth
-        mTitleMap = new HashMap<String, String>();
+        mTitleMap = new HashMap<>();
         mTitleMap.put("ICON", R.drawable.empty_icon + "");
         mTitleMap.put("TITLE", getString(R.string.bluetooth_title));
         tmpList.add(mTitleMap);
         // USB
-        mTitleMap = new HashMap<String, String>();
+        mTitleMap = new HashMap<>();
         mTitleMap.put("ICON",R.drawable.empty_icon + "");
         mTitleMap.put("TITLE", getString(R.string.usb_title));
         tmpList.add(mTitleMap);
@@ -698,13 +704,13 @@ public final class  DSPManager extends Activity {
      * @return String[] containing titles
      */
     private String[] getEntries() {
-        ArrayList<String> entryString = new ArrayList<String>();
+        ArrayList<String> entryString = new ArrayList<>();
         entryString.add("headset");
         entryString.add("speaker");
         entryString.add("bluetooth");
         entryString.add("usb");
 
-        return entryString.toArray(new String[entryString.size()]);
+        return entryString.toArray(new String[0]);
     }
 
     //==================================
@@ -772,7 +778,7 @@ public final class  DSPManager extends Activity {
     public static class HelpFragment extends DialogFragment {
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle state) {
-            View v = inflater.inflate(R.layout.help, null);
+            View v = inflater.inflate(R.layout.help, container, false);
             TextView tv = v.findViewById(R.id.help);
             tv.setText(R.string.help_text);
             return v;

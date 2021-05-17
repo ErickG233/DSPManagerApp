@@ -15,13 +15,15 @@ import android.util.AttributeSet;
 import android.view.SurfaceView;
 import android.view.View;
 
+import androidx.core.content.ContextCompat;
+
 import com.bel.android.dspmanager.R;
 
 import java.util.Locale;
 
 public class EqualizerSurface extends SurfaceView {
-    private static int MIN_FREQ = 10;
-    private static int MAX_FREQ = 21000;
+    private final static int MIN_FREQ = 10;
+    private final static int MAX_FREQ = 21000;
     public static int MIN_DB = -12;
     public static int MAX_DB = 12;
 
@@ -38,32 +40,29 @@ public class EqualizerSurface extends SurfaceView {
         setWillNotDraw(false);
 
         mWhite = new Paint();
-        mWhite.setColor(getResources().getColor(R.color.white));
+        mWhite.setColor(ContextCompat.getColor(getContext(), R.color.white));
         mWhite.setStyle(Style.STROKE);
         mWhite.setTextSize(13);
         mWhite.setAntiAlias(true);
 
         mGridLines = new Paint();
-        mGridLines.setColor(getResources().getColor(R.color.grid_lines));
+        mGridLines.setColor(ContextCompat.getColor(getContext(), R.color.grid_lines));
         mGridLines.setStyle(Style.STROKE);
 
         mControlBarText = new Paint(mWhite);
         mControlBarText.setTextAlign(Paint.Align.CENTER);
-        mControlBarText.setShadowLayer(2, 0, 0, getResources()
-                .getColor(R.color.cb));
+        mControlBarText.setShadowLayer(2, 0, 0, ContextCompat.getColor(getContext(), R.color.cb));
 
         mControlBar = new Paint();
         mControlBar.setStyle(Style.STROKE);
-        mControlBar.setColor(getResources().getColor(R.color.cb));
+        mControlBar.setColor(ContextCompat.getColor(getContext(), R.color.cb));
         mControlBar.setAntiAlias(true);
         mControlBar.setStrokeCap(Cap.ROUND);
-        mControlBar.setShadowLayer(2, 0, 0, getResources()
-                .getColor(R.color.black));
+        mControlBar.setShadowLayer(2, 0, 0, ContextCompat.getColor(getContext(), R.color.black));
 
         mControlBarKnob = new Paint();
         mControlBarKnob.setStyle(Style.FILL);
-        mControlBarKnob.setColor(getResources()
-                .getColor(R.color.white));
+        mControlBarKnob.setColor(ContextCompat.getColor(getContext(), R.color.white));
         mControlBarKnob.setAntiAlias(true);
 
         mFrequencyResponseBg = new Paint();
@@ -73,15 +72,13 @@ public class EqualizerSurface extends SurfaceView {
         mFrequencyResponseHighlight = new Paint();
         mFrequencyResponseHighlight.setStyle(Style.STROKE);
         mFrequencyResponseHighlight.setStrokeWidth(6);
-        mFrequencyResponseHighlight.setColor(getResources()
-                .getColor(R.color.freq_hl));
+        mFrequencyResponseHighlight.setColor(ContextCompat.getColor(getContext(), R.color.freq_hl));
         mFrequencyResponseHighlight.setAntiAlias(true);
 
         mFrequencyResponseHighlight2 = new Paint();
         mFrequencyResponseHighlight2.setStyle(Style.STROKE);
         mFrequencyResponseHighlight2.setStrokeWidth(3);
-        mFrequencyResponseHighlight2.setColor(getResources()
-                .getColor(R.color.freq_hl2));
+        mFrequencyResponseHighlight2.setColor(ContextCompat.getColor(getContext(), R.color.freq_hl2));
         mFrequencyResponseHighlight2.setAntiAlias(true);
     }
 
@@ -116,7 +113,7 @@ public class EqualizerSurface extends SurfaceView {
     /* This method is for FrequencyResponseBg */
     /* 这个方法是给调整波段的背景渐变用的 */
 
-    final LinearGradient initFrequencyResponseBg(Resources res){
+    final LinearGradient initFrequencyResponseBg(){
         return new LinearGradient(0, 0, 0, mHeight,
 
                 /*
@@ -127,21 +124,21 @@ public class EqualizerSurface extends SurfaceView {
                  * holo_blue_dark < 3
                  */
 
-                new int[]{res.getColor(R.color.eq_red),
-                        res.getColor(R.color.eq_yellow),
-                        res.getColor(R.color.eq_holo_bright),
-                        res.getColor(R.color.eq_holo_blue),
-                        res.getColor(R.color.eq_holo_dark)},
+                new int[]{ContextCompat.getColor(getContext(), R.color.eq_red),
+                        ContextCompat.getColor(getContext(), R.color.eq_yellow),
+                        ContextCompat.getColor(getContext(), R.color.eq_holo_bright),
+                        ContextCompat.getColor(getContext(), R.color.eq_holo_blue),
+                        ContextCompat.getColor(getContext(), R.color.eq_holo_dark)},
                 new float[]{0, 0.2f, 0.45f, 0.6f, 1f},
                 Shader.TileMode.CLAMP);
     }
 
     /* This method is for controlBar */
     /* 这个方法是给调整波段的控制条用的 */
-    final LinearGradient initControlBar(Resources res){
+    final LinearGradient initControlBar(){
         return new LinearGradient(0, 0, 0, mHeight,
-                new int[]{res.getColor(R.color.cb_shader),
-                        res.getColor(R.color.cb_shader_alpha)},
+                new int[]{ContextCompat.getColor(getContext(), R.color.cb_shader),
+                        ContextCompat.getColor(getContext(), R.color.cb_shader_alpha)},
                 new float[]{0, 1},
                 Shader.TileMode.CLAMP);
     }
@@ -157,10 +154,9 @@ public class EqualizerSurface extends SurfaceView {
 
         float barWidth = res.getDimension(R.dimen.bar_width);
         mControlBar.setStrokeWidth(barWidth);
-        mControlBarKnob.setShadowLayer(barWidth * 0.5f, 0, 0,
-                res.getColor(R.color.off_white));
-        mFrequencyResponseBg.setShader(initFrequencyResponseBg(res));
-        mControlBar.setShader(initControlBar(res));
+        mControlBarKnob.setShadowLayer(barWidth * 0.5f, 0, 0, ContextCompat.getColor(getContext(), R.color.off_white));
+        mFrequencyResponseBg.setShader(initFrequencyResponseBg());
+        mControlBar.setShader(initControlBar());
     }
 
     public void setBand(int i, float value) {
