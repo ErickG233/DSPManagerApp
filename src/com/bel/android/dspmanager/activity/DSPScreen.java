@@ -1,3 +1,4 @@
+
 package com.bel.android.dspmanager.activity;
 
 import android.content.Context;
@@ -37,31 +38,32 @@ public final class DSPScreen extends PreferenceFragment {
         }
     }
 
+    // 配置更改监听器
     private final OnSharedPreferenceChangeListener listener = new OnSharedPreferenceChangeListener() {
         @Override
         public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
             /* If the listpref is updated, copy the changed setting to the eq. */
-            if (("dsp." + getPage() + ".tone.eq").equals(key)) {
+            // 更新音效配置
+            if (("dsp." + getPage() + ".tone.eq.type").equals(key)) {
                 String newValue = sharedPreferences.getString(key, null);
                 if (!"custom".equals(newValue)) {
                     Editor e = sharedPreferences.edit();
-                    e.putString("dsp.tone.eq.custom", newValue);
+                    e.putString(("dsp." + getPage() + ".tone.eq.values"), newValue);
                     e.apply();
 
                     /* Now tell the equalizer that it must display something else. */
                     EqualizerPreference eq = (EqualizerPreference)
-                            getPreferenceScreen().findPreference("dsp.tone.eq.custom");
+                            getPreferenceScreen().findPreference(("dsp." + getPage() + ".tone.eq.values"));
                     eq.refreshFromPreference();
                 }
             }
-
             /* If the equalizer surface is updated, select matching pref entry or "custom". */
-            if ("dsp.tone.eq.custom".equals(key)) {
+            // 从预设获取EQ值
+            if (("dsp." + getPage() + ".tone.eq.values").equals(key)) {
                 String newValue = sharedPreferences.getString(key, null);
-
                 String desiredValue = "custom";
                 SummariedListPreference preset = (SummariedListPreference)
-                        getPreferenceScreen().findPreference("dsp." + getPage() + ".tone.eq");
+                        getPreferenceScreen().findPreference(("dsp." + getPage() + ".tone.eq.type"));
                 for (CharSequence entry : preset.getEntryValues()) {
                     if (entry.equals(newValue)) {
                         desiredValue = newValue;
@@ -72,7 +74,7 @@ public final class DSPScreen extends PreferenceFragment {
                 /* Tell listpreference that it must display something else. */
                 if (!preset.getEntry().equals(desiredValue)) {
                     Editor e = sharedPreferences.edit();
-                    e.putString("dsp." + getPage() + ".tone.eq", desiredValue);
+                    e.putString(("dsp." + getPage() + ".tone.eq.type"), desiredValue);
                     e.apply();
                     preset.refreshFromPreference();
                 }
@@ -85,14 +87,17 @@ public final class DSPScreen extends PreferenceFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        String config = getArguments().getString("config");
+        // 获取页面标题
+        String thePage = getArguments().getString("setPageTo");
 
         getPreferenceManager().setSharedPreferencesName(
-                DSPManager.SHARED_PREFERENCES_BASENAME + "." + config);
+                DSPManager.SHARED_PREFERENCES_BASENAME + "." + thePage);
         getPreferenceManager().setSharedPreferencesMode(Context.MODE_PRIVATE);
 
+        // 获取本地页面的配置
+        // 设备名_preferences.xml
         try {
-            int xmlId = R.xml.class.getField(config + "_preferences").getInt(null);
+            int xmlId = R.xml.class.getField(thePage + "_preferences").getInt(null);
             addPreferencesFromResource(xmlId);
         } catch (Exception e) {
             throw new RuntimeException(e);

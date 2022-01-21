@@ -61,12 +61,14 @@ public class EqualizerPreference extends DialogPreference {
     protected void updateDspFromDialogEqualizer() {
         if (mHeadsetService != null) {
             float[] levels = new float[6];
+            if (HeadsetService.getAudioOutputRouting().equals(getPage()))
+                HeadsetService.eqDialogUpdate = true;
             for (int i = 0; i < levels.length; i++) {
                 levels[i] = mDialogEqualizer.getBand(i);
             }
-            if (HeadsetService.getAudioOutputRouting().equals(getPage())) {
+            if (HeadsetService.getAudioOutputRouting().equals(getPage()))
                 mHeadsetService.setEqualizerLevels(levels);
-            }
+
         }
     }
 
@@ -119,22 +121,33 @@ public class EqualizerPreference extends DialogPreference {
         getContext().bindService(new Intent(getContext(), HeadsetService.class), connectionForDialog, 0);
     }
 
+    // EQ均衡器关闭
     @Override
     protected void onDialogClosed(boolean positiveResult) {
+        StringBuilder value = new StringBuilder();
+        float[] eqSet = new float[6];
         if (positiveResult) {
-            StringBuilder value = new StringBuilder();
             int i = 0;
             while (i < 5) {
                 value.append(String.format(Locale.ROOT, "%.1f", Math.round(mDialogEqualizer.getBand(i) * 10.f) / 10.f)).append(";");
+                eqSet[i] = mDialogEqualizer.getBand(i);
                 ++i;
             }
             value.append(String.format(Locale.ROOT, "%.1f", Math.round(mDialogEqualizer.getBand(i) * 10.f) / 10.f));
+            eqSet[i] = mDialogEqualizer.getBand(i);
+            // persistString(value.toString());
+            Log.e(TAG, "onDialogClosed: string" + value.toString());
             persistString(value.toString());
             updateListEqualizerFromValue();
         }
 
+
+        // 交互界面关闭，更新关闭
+        HeadsetService.eqDialogUpdate = false;
+        // 如果配置的页面和正在处理的页面一致，就更新音效
         if (mHeadsetService != null) {
-            mHeadsetService.setEqualizerLevels(null);
+            if (getPage().equals(HeadsetService.getAudioOutputRouting()))
+                mHeadsetService.setEqualizerLevels(eqSet);
         }
         getContext().unbindService(connectionForDialog);
     }

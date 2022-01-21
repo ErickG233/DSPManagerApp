@@ -50,10 +50,11 @@
             android:title="@string/pref_equalizer_preset_title"
             android:entries="@array/equalizer_preset_modes"
             android:dialogTitle="@string/pref_equalizer_preset_title"
-            android:key="dsp.bluetooth.tone.eq"
+            android:key="dsp.bluetooth.tone.eq.type"
             android:defaultValue="0.0;0.0;0.0;0.0;0.0;0.0"
             android:entryValues="@array/equalizer_preset_values" />
-        <com.bel.android.dspmanager.preference.EqualizerPreference android:key="dsp.tone.eq.custom" />
+        <com.bel.android.dspmanager.preference.EqualizerPreference
+            android:key="dsp.bluetooth.tone.eq.values" />
         <com.bel.android.dspmanager.preference.SummariedListPreference
             android:title="@string/pref_equalizer_loudness_title"
             android:entries="@array/equalizer_loudness_modes"

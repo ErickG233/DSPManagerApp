@@ -77,6 +77,11 @@ public class HeadsetService extends Service {
      */
     public static boolean mUseUsb = false;
 
+    /**
+     * Check the state of EQ change
+     */
+    public static boolean eqDialogUpdate = false;
+
     // 组件检测完毕
 
     /**
@@ -297,16 +302,13 @@ public class HeadsetService extends Service {
 
     // 检测音频输出方式
     public static String getAudioOutputRouting() {
-        if (mUseBluetooth) {
+        if (mUseBluetooth)
             return "bluetooth";
-        }
-        if (mUseHeadset) {
+        else if (mUseHeadset)
             return "headset";
-        }
-        if (mUseUsb) {
+        else if (mUseUsb)
             return "usb";
-        }
-        return "speaker";
+        else return "speaker";
     }
 
     // 添加音效渲染的方法
@@ -328,16 +330,18 @@ public class HeadsetService extends Service {
 
         // 均衡器频段
         session.DSP_Equalizer.setEnabled(preferences.getBoolean("dsp." + OutPutMode + ".tone.enable", false));
-        if (mOverriddenEqualizerLevels != null) {
-            for (int i = 0; i < mOverriddenEqualizerLevels.length; i++) {
+
+        if (eqDialogUpdate) {
+            for (int i = 0; i < mOverriddenEqualizerLevels.length; i++)
                 DSPModule.setParameterEqualizer(session.DSP_Equalizer, i, (short) Math.round(mOverriddenEqualizerLevels[i] * 100));
-            }
-        } else {
-            String[] levels = preferences.getString("dsp." + OutPutMode + ".tone.eq.custom", "0.0;0.0;0.0;0.0;0.0;0.0").split(";");
+        }
+        else {
+            String[] levels = preferences.getString("dsp." + OutPutMode + ".tone.eq.values", "0.0;0.0;0.0;0.0;0.0;0.0").split(";");
             for (int i = 0; i < levels.length; i++) {
                 DSPModule.setParameterEqualizer(session.DSP_Equalizer, i, (short) Math.round(Float.parseFloat(levels[i]) * 100));
             }
         }
+
         // 响度补偿
         DSPModule.setParameter(session.DSP_Equalizer, 1000, Short.parseShort(preferences.getString("dsp." + OutPutMode + ".tone.loudness", "10000")));
 
@@ -358,11 +362,8 @@ public class HeadsetService extends Service {
 
         // 获取全局模式状态
         effectMode = preferencesEffectMode.getInt("dsp.manager.effectMode", 0);
-
-        // 创建一个接收音频输出的字符串，判断当前音频输出是哪个
-        final String outPutMode = getAudioOutputRouting();
         // 创建一个共享选项用来接收页面切换之后的音频配置
-        SharedPreferences sharedPreferences = getSharedPreferences(DSPManager.SHARED_PREFERENCES_BASENAME + "." + outPutMode, 0);
+        SharedPreferences preferencesEffectSettings = getSharedPreferences(DSPManager.SHARED_PREFERENCES_BASENAME + "." + getAudioOutputRouting(), Context.MODE_PRIVATE);
 
         // 判断是否刷新页面配置，如果是，连同页面一起刷新
         // 传递需要切换页面的意图
@@ -374,14 +375,14 @@ public class HeadsetService extends Service {
         if (effectMode == 0) {
             // 全局音效渲染
             try {
-                updateDSPEffect(sharedPreferences, mDSPEffect, outPutMode);
+                updateDSPEffect(preferencesEffectSettings, mDSPEffect, getAudioOutputRouting());
             } catch (Exception e) {
                 Log.e(TAG, "Could not effect audio.", e);
             }
         } else {
             for (Integer sessionId : new ArrayList<>(mAudioSessions.keySet())) {
                 try {
-                    updateDSPEffect(sharedPreferences, mAudioSessions.get(sessionId), outPutMode);
+                    updateDSPEffect(preferencesEffectSettings, mAudioSessions.get(sessionId), getAudioOutputRouting());
                 } catch (Exception e) {
                     Log.w(TAG, String.format(
                             "Trouble trying to manage session %d, removing...", sessionId), e);
@@ -481,8 +482,6 @@ public class HeadsetService extends Service {
                 }
                 return super.onStartCommand(intent, flag, startId);
             }
-            Log.i(TAG, "Global audio session created.");
-            updateDSP(false);
         }
         return super.onStartCommand(intent, flag, startId);
     }

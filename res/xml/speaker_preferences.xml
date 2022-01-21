@@ -34,9 +34,10 @@
             android:title="@string/pref_equalizer_preset_title"
             android:entries="@array/equalizer_preset_modes"
             android:dialogTitle="@string/pref_equalizer_preset_title"
-            android:key="dsp.speaker.tone.eq"
+            android:key="dsp.speaker.tone.eq.type"
             android:defaultValue="0.0;0.0;0.0;0.0;0.0;0.0"
             android:entryValues="@array/equalizer_preset_values" />
-        <com.bel.android.dspmanager.preference.EqualizerPreference android:key="dsp.tone.eq.custom" />
+        <com.bel.android.dspmanager.preference.EqualizerPreference
+            android:key="dsp.speaker.tone.eq.values" />
     </PreferenceCategory>
 </PreferenceScreen>

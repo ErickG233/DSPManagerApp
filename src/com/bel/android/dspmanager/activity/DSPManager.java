@@ -138,10 +138,22 @@ public final class  DSPManager extends Activity {
             permissionLists.add(Manifest.permission.READ_PHONE_STATE);
             //ActivityCompat.requestPermissions(this,new String[]{Manifest.permission.READ_PHONE_STATE}, 1);
         }
+        // 前台服务 Android 10
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.P) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.FOREGROUND_SERVICE) != PackageManager.PERMISSION_GRANTED)
+                permissionLists.add(Manifest.permission.FOREGROUND_SERVICE);
+        }
+        // Android 11
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.Q) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.MODIFY_AUDIO_SETTINGS) != PackageManager.PERMISSION_GRANTED)
+                permissionLists.add(Manifest.permission.MODIFY_AUDIO_SETTINGS);
+        }
         // requestCode = 1 开启权限
         if (!permissionLists.isEmpty()){
             ActivityCompat.requestPermissions(this,permissionLists.toArray(new String[0]),1);
         }
+
+
     }
 
 
@@ -155,15 +167,14 @@ public final class  DSPManager extends Activity {
         public void onReceive(final Context context, final Intent intent) {
             String action = intent.getAction();
             if("dsp.activity.refreshPage".equals(action)) {
-                if (HeadsetService.mUseBluetooth) {
+                if (HeadsetService.getAudioOutputRouting().equals("bluetooth"))
                     routing = 2;
-                } else if (HeadsetService.mUseHeadset) {
+                else if (HeadsetService.getAudioOutputRouting().equals("headset"))
                     routing = 0;
-                } else if (HeadsetService.mUseUsb) {
+                else if (HeadsetService.getAudioOutputRouting().equals("usb"))
                     routing = 3;
-                } else {
-                    routing = 1;
-                }
+                else routing = 1;
+                manualPosition = routing;
                 selectItem(routing);
             }
         }
@@ -173,18 +184,19 @@ public final class  DSPManager extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        // 音频输出配置
-        mPreferences = getSharedPreferences(DSPManager.SHARED_PREFERENCES_BASENAME + "." + HeadsetService.getAudioOutputRouting(), 0);
-        mUserLearnedDrawer = mPreferences.getBoolean(PREF_USER_LEARNED_DRAWER, false);
 
         // 音频渲染模式，默认全局
         // 获取渲染模式配置文件
-        preferencesEffectMode = getSharedPreferences(DSPManager.SHARED_PREFERENCES_BASENAME + "." + "pref_settings", 0);
+        preferencesEffectMode = getSharedPreferences(DSPManager.SHARED_PREFERENCES_BASENAME + "." + "pref_settings", Context.MODE_PRIVATE);
         // 判断该文件里面有没有全局设置字样，没有就添加，并且默认模式为全局模式
         if (!preferencesEffectMode.contains("dsp.manager.effectMode")) {
             preferencesEffectMode.edit().putInt("dsp.manager.effectMode", 0).apply();
         }
         effectMode = preferencesEffectMode.getInt("dsp.manager.effectMode", 0);
+
+        // 音频输出配置
+        mPreferences = getSharedPreferences(DSPManager.SHARED_PREFERENCES_BASENAME + "." + HeadsetService.getAudioOutputRouting(), Context.MODE_PRIVATE);
+        mUserLearnedDrawer = mPreferences.getBoolean(PREF_USER_LEARNED_DRAWER, false);
 
         // 调用权限获取方法
         // 判断当前系统版本
@@ -216,20 +228,18 @@ public final class  DSPManager extends Activity {
         // 启动音效服务
         Intent serviceIntent = new Intent(this, HeadsetService.class);
         startService(serviceIntent);
-        sendOrderedBroadcast(new Intent(DSPManager.ACTION_UPDATE_PREFERENCES),null);
+        sendOrderedBroadcast(new Intent(DSPManager.ACTION_UPDATE_PREFERENCES), null);
         setUpUi();
 
         // 动态注册页面更新
         registerReceiver(updateReceiver, new IntentFilter("dsp.activity.refreshPage"));
-        if (HeadsetService.mUseBluetooth) {
-                routing = 2;
-            } else if (HeadsetService.mUseHeadset) {
-                routing = 0;
-            } else if (HeadsetService.mUseUsb) {
-                routing = 3;
-            } else {
-                routing = 1;
-        }
+        if (HeadsetService.getAudioOutputRouting().equals("bluetooth"))
+            routing = 2;
+        else if (HeadsetService.getAudioOutputRouting().equals("headset"))
+            routing = 0;
+        else if (HeadsetService.getAudioOutputRouting().equals("usb"))
+            routing = 3;
+        else routing = 1;
         // 让手动界面的值与当前页面值相等
         manualPosition = routing;
         selectItem(routing);
@@ -635,12 +645,7 @@ public final class  DSPManager extends Activity {
             mDrawerLayout.openDrawer(mFragmentContainerView);
         }
 
-        mDrawerLayout.post(new Runnable() {
-            @Override
-            public void run() {
-                mDrawerToggle.syncState();
-            }
-        });
+        mDrawerLayout.post(() -> mDrawerToggle.syncState());
 
         mDrawerToggle.setDrawerIndicatorEnabled(true);
         mDrawerLayout.addDrawerListener(mDrawerToggle);
@@ -730,7 +735,8 @@ public final class  DSPManager extends Activity {
 
                 final DSPScreen dspFragment = new DSPScreen();
                 Bundle b = new Bundle();
-                b.putString("config", mEntries[fragmentId]);
+                // 页面跳转
+                b.putString("setPageTo", mEntries[fragmentId]);
                 dspFragment.setArguments(b);
                 return dspFragment;
         }
@@ -769,7 +775,7 @@ public final class  DSPManager extends Activity {
 
                 final DSPScreen dspFragment = new DSPScreen();
                 Bundle b = new Bundle();
-                b.putString("config", entries[position]);
+                b.putString("setPageTo", entries[position]);
                 dspFragment.setArguments(b);
                 return dspFragment;
         }
