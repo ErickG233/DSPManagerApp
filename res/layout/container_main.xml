@@ -6,10 +6,8 @@
     android:layout_height="match_parent">
 
     <com.google.android.material.appbar.AppBarLayout
-        android:fitsSystemWindows="true"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:liftOnScroll="false">
+        android:layout_height="wrap_content">
         <com.google.android.material.appbar.MaterialToolbar
             android:id="@+id/container_toolbar"
             android:layout_width="match_parent"
@@ -17,9 +15,12 @@
             />
     </com.google.android.material.appbar.AppBarLayout>
 
-    <!-- 引入侧边栏 -->
-    <include
-        android:id="@+id/drawer_layout"
-        layout="@layout/drawer_layout"/>
+    <LinearLayout
+        android:orientation="vertical"
+        android:id="@+id/pref_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

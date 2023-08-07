@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_headset"
+            android:title="@string/nav_title_headset"
+            android:icon="@drawable/ic_headset"/>
+        <item
+            android:id="@+id/nav_speaker"
+            android:title="@string/nav_title_speaker"
+            android:icon="@drawable/ic_speaker"
+            />
+        <item
+            android:id="@+id/nav_bluetooth"
+            android:title="@string/nav_title_bluetooth"
+            android:icon="@drawable/ic_bluetooth"/>
+        <item
+            android:id="@+id/nav_usb_dok"
+            android:title="@string/nav_title_usb"
+            android:icon="@drawable/ic_usb"/>
+    </group>
+
+</menu>

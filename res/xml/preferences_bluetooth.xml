@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <SwitchPreference
+        android:title="@string/effect_main_title"
+        android:icon="@drawable/ic_power"
+        android:key="dsp.bluetooth.main.switch"
+        android:summaryOn="@string/pref_main_switch_summary_on"
+        android:summaryOff="@string/pref_main_switch_summary_off"/>
+    <SwitchPreference
+        android:key="dsp.bluetooth.compression.enable"
+        android:title="@string/compression_title"
+        android:summaryOn="@string/pref_compression_summary_on"
+        android:summaryOff="@string/pref_compression_summary_off"
+        />
+    <com.cyanogenmod.dspmanager.ui.CustomSeekBarPreference
+        android:key="dsp.bluetooth.compression.values"
+        android:title="@string/compression_value"
+        app:min="5"
+        android:max="30"
+        android:defaultValue="5"
+        app:updatesContinuously="true"
+        />
+    <SwitchPreference
+        android:key="dsp.bluetooth.bass.boost.enable"
+        android:title="@string/bass_boost_title"
+        android:summaryOn="@string/pref_bass_boost_summary_on"
+        android:summaryOff="@string/pref_bass_boost_summary_off"/>
+    <com.cyanogenmod.dspmanager.ui.CustomSeekBarPreference
+        android:key="dsp.bluetooth.bass.boost.freq.point"
+        android:title="@string/pref_bass_boost_freq_point"
+        app:min="20"
+        android:max="200"
+        android:defaultValue="20"
+        app:updatesContinuously="true"
+        />
+    <com.cyanogenmod.dspmanager.ui.CustomSeekBarPreference
+        android:key="dsp.bluetooth.bass.boost.freq.strength"
+        android:title="@string/pref_bass_boost_freq_strength"
+        app:min="0"
+        android:max="100"
+        android:defaultValue="0"
+        app:updatesContinuously="true"/>
+
+    <SwitchPreference
+        android:icon="@drawable/ic_eq"
+        android:key="dsp.bluetooth.tone.eq.enable"
+        android:title="@string/eq_title"
+        android:summaryOff="@string/pref_equalizer_summary_off"
+        android:summaryOn="@string/pref_equalizer_summary_on" />
+    <com.cyanogenmod.dspmanager.ui.SummarisedListPreference
+        android:key="dsp.bluetooth.tone.eq.presets"
+        android:title="@string/pref_equalizer_preset_title"
+        android:dialogTitle="@string/pref_equalizer_preset_title"
+        android:entries="@array/eq_preset_mode"
+        android:entryValues="@array/eq_preset_value"
+        app:iconSpaceReserved="false"
+        android:defaultValue="0.0;0.0;0.0;0.0;0.0;0.0"
+        />
+    <com.cyanogenmod.dspmanager.ui.EQDialogPreference
+        android:key="dsp.bluetooth.tone.eq.values"
+        android:defaultValue="0.0;0.0;0.0;0.0;0.0;0.0"
+        android:dialogLayout="@layout/surfaceview_equalizer_popup"
+        android:layout="@layout/surfaceview_equalizer" />
+    <SwitchPreference
+        android:key="dsp.bluetooth.eq.loudness.enable"
+        android:title="@string/pref_equalizer_loudness_title"
+        android:summaryOn="@string/equalizer_loudness_summary_on"
+        android:summaryOff="@string/equalizer_loudness_summary_off"
+        />
+
+    <com.cyanogenmod.dspmanager.ui.CustomSeekBarPreference
+        android:key="dsp.bluetooth.eq.loudness.strength"
+        android:title="@string/pref_equalizer_loudness_strength"
+        app:min="0"
+        android:max="100"
+        android:defaultValue="0"
+        app:updatesContinuously="true"/>
+    <SwitchPreference
+        android:key="dsp.bluetooth.virtualize.enable"
+        android:title="@string/virtualizer_title"
+        android:summaryOn="@string/pref_virtualizer_summary_on"
+        android:summaryOff="@string/pref_virtualizer_summary_off"/>
+    <com.cyanogenmod.dspmanager.ui.SummarisedListPreference
+        android:key="dsp.bluetooth.virtualize.type"
+        android:title="@string/pref_virtualizer_types"
+        android:defaultValue="0"
+        android:entries="@array/virtualize_modes"
+        android:entryValues="@array/virtualize_modes_values"/>
+
+</PreferenceScreen>

@@ -1,0 +1,27 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Theme.DSPManager" parent="Theme.Material3.Dark.NoActionBar">
+        <!-- Primary brand color. -->
+        <item name="colorPrimary">@color/purple_200</item>
+        <item name="colorPrimaryVariant">@color/purple_700</item>
+        <item name="colorOnPrimary">@color/black</item>
+        <!-- Secondary brand color. -->
+        <item name="colorSecondary">@color/teal_200</item>
+        <item name="colorSecondaryVariant">@color/teal_200</item>
+        <item name="colorOnSecondary">@color/black</item>
+        <!-- Status bar color. -->
+        <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
+        <item name="android:windowLightStatusBar">false</item>
+        <!-- Customize your theme here. -->
+        <item name="preferenceTheme">@style/ThemeOverlay.App.Preference</item>
+        <item name="android:windowLightNavigationBar" tools:targetApi="27">false</item>
+    </style>
+
+    <style name="ThemeOverlay.App.Preference" parent="PreferenceThemeOverlay">
+        <item name="switchPreferenceStyle">@style/PreferenceMaterialSwitch</item>
+    </style>
+
+    <style name="PreferenceMaterialSwitch" parent="@style/Preference.SwitchPreference.Material">
+        <item name="widgetLayout">@layout/preference_widget_material_switch</item>
+    </style>
+</resources>

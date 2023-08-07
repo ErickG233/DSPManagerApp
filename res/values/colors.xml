@@ -1,24 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <resources>
-    <color name="white">#ffffffff</color>
-    <color name="off_white">#ffdedede</color>
-    <color name="black">#ff000000</color>
-    <color name="grid_lines">#22ffffff</color>
-    <color name="cb">#88bbffff</color>
-    <color name="freq_hl">#2000ddff</color>
-    <color name="freq_hl2">#4033b5e5</color>
-    <color name="eq_red">#80ff0000</color>
-    <color name="eq_yellow">#80f0ff00</color>
-    <color name="eq_holo_bright">#8000ddff</color>
-    <color name="eq_holo_blue">#8033b5e5</color>
-    <color name="eq_holo_dark">#800099cc</color>
-    <color name="cb_shader">#ffccffff</color>
-    <color name="cb_shader_alpha">#44ccffff</color>
-    <color name="action_bar_color">#ff0d0d0d</color>
+    <color name="purple_200">#FFBB86FC</color>
+    <color name="purple_500">#FF6200EE</color>
+    <color name="purple_700">#FF3700B3</color>
+    <color name="teal_200">#FF03DAC5</color>
+    <color name="teal_700">#FF018786</color>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="shadow">#44000000</color>
+    <color name="blue_green">#FF00FFFF</color>
 
-    <!-- Material -->
-    <color name="primary">#009688</color>
-    <color name="primary_dark">#00796B</color>
-    <color name="accent">#009688</color>
+    <!-- SurfaceView -->
+    <color name="off_white">#FFDEDEDE</color>
+    <color name="grid_lines">#22FFFFFF</color>
+    <color name="freq_hl_dark">#2000DDFF</color>
+    <color name="freq_hl_fade">#4033B5E5</color>
+    <color name="eq_max_red">#80FF0000</color>
+    <color name="eq_high_yellow">#80F0FF00</color>
+    <color name="eq_flat_bright">#8000DDFF</color>
+    <color name="eq_low_blue">#8033B5E5</color>
+    <color name="eq_bottom_dark">#800099CC</color>
+    <color name="bar_top">#88BBFFFF</color>
+    <color name="bar_shader">#FFCCFFFF</color>
+    <color name="bar_shader_alpha">#44CCFFFF</color>
+
+    <!-- SurfaceView -->
 </resources>

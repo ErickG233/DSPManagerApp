@@ -1,52 +1,52 @@
-apply plugin: 'com.android.application'
+plugins {
+    id 'com.android.application'
+    id 'org.jetbrains.kotlin.android'
+}
 
 android {
-    signingConfigs {
-        release {
-            storeFile file('E:\\Test\\newDSPManager.jks')
-            storePassword '16269701SDS'
-            keyAlias 'DSPManager'
-            keyPassword '16269701SDS'
-        }
-    }
-    compileSdkVersion 31
+    namespace 'com.cyanogenmod.dspmanager'
+    compileSdk 33
+
     defaultConfig {
-        applicationId "com.bel.android.dspmanager"
-        minSdkVersion 23
-        targetSdkVersion 31
-        versionCode 2
-        versionName "2.0"
+        applicationId "com.cyanogenmod.dspmanager"
+        minSdk 26
+        targetSdk 33
+        versionCode 1
+        versionName "1.0"
+
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        signingConfig signingConfigs.release
     }
+
     buildTypes {
-        customDebugType {
-            debuggable false
-        }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = '1.8'
+    }
+
+    viewBinding {
+        enable = true
+    }
 }
 
-
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation 'androidx.appcompat:appcompat:1.4.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.2'
-    implementation 'androidx.viewpager:viewpager:1.0.0'
-    implementation 'androidx.viewpager2:viewpager2:1.0.0'
+
+    implementation 'androidx.core:core-ktx:1.10.1'
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'com.google.android.material:material:1.9.0'
     testImplementation 'junit:junit:4.13.2'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
-    //noinspection GradleCompatible
-    implementation 'com.android.support:support-v13:28.0.0'
-    implementation 'com.github.ChickenHook:RestrictionBypass:2.2'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
 
-
-/*    // androidx preference
-    implementation 'androidx.preference:preference:1.1.1'
-    // androidx fragment
-    implementation 'androidx.fragment:fragment:1.2.5'*/
+    implementation("androidx.fragment:fragment-ktx:1.6.0")
+    implementation("androidx.preference:preference-ktx:1.2.0")
+    implementation("androidx.navigation:navigation-ui-ktx:2.6.0")
+    implementation("com.github.ChickenHook:RestrictionBypass:2.2")
 }

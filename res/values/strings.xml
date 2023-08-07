@@ -1,65 +1,59 @@
-<?xml version="1.0" encoding="utf-8"?>
-
 <resources xmlns:tools="http://schemas.android.com/tools"
     tools:ignore="MissingTranslation">
     <string name="app_name">DSP Manager</string>
-    <string name="select_configuration_title">Select configuration to edit</string>
-    <string name="headset_title" >Headset</string>
-    <string name="speaker_title">Speaker</string>
-    <string name="bluetooth_title">Bluetooth</string>
-    <string name="usb_title">USB/Dok</string>
-    <string name="audio_effects">Audio effects</string>
-    <string name="pref_unavailable">Functionality is not available on your device</string>
-    <!-- ErickG Addition -->
-    <string name="preset_confirm">OK</string>
-    <string name="preset_cancel">Cancel</string>
-    <!-- Load preset failed -->
-    <string name="load_preset_headset_failed">Could not load Headset preset,make sure you have placed the correct file.</string>
-    <string name="load_preset_bluetooth_failed">Could not load Bluetooth preset,make sure you have placed the correct file.</string>
-    <string name="load_preset_speaker_failed">Could not load Speaker preset,make sure you have placed the correct file.</string>
-    <string name="load_preset_usb_failed">Could not load USB/Dok preset,make sure you have placed the correct file.</string>
-    <!-- Load preset failed end -->
-    <!-- Save preset failed -->
-    <string name="save_preset_headset_failed">Could not save Headset preset,make sure you have tapped Headset page.</string>
-    <string name="save_preset_speaker_failed">Could not save Speaker preset,make sure you have tapped Speaker page.</string>
-    <string name="save_preset_bluetooth_failed">Could not save Bluetooth preset,make sure you have tapped Bluetooth page.</string>
-    <string name="save_preset_usb_failed">Could not save Usb/Dock preset,make sure you have tapped Usb/Dock page.</string>
-    <!-- Save preset failed end -->
-    <!-- EffectMode start -->
-    <string name="dsp_effect_mode_title">EffectMode:</string>
-    <string name="dsp_effect_global">Global effect</string>
-    <string name="dsp_effect_general">Common</string>
-    <!-- EffectMode end -->
-    <!-- ErickG Addition End -->
-    <string name="dsp_settings_headset">DSP settings - Headset</string>
-    <string name="dsp_settings_speaker">DSP settings - Phone speaker</string>
-    <string name="dsp_settings_bluetooth">DSP settings - Bluetooth device</string>
-    <string name="pref_dsp_title">Dynamic range compression</string>
-    <string name="pref_dsp_summary_on">Compression is enabled</string>
-    <string name="pref_dsp_summary_off">Compression is disabled</string>
-    <string name="pref_dsp_enable">Enable</string>
-    <string name="pref_effect_title">Select effect strength</string>
-    <string name="pref_effect_freq_title">Select effect center frequency</string>
-    <string name="dialog_effect">Effect strength</string>
-    <string name="pref_equalizer_title">Equalizer</string>
+
+    <!-- 导航栏部分开始 -->
+    <string name="nav_title_headset">Headset</string>
+    <string name="nav_title_speaker">Speaker</string>
+    <string name="nav_title_bluetooth">Bluetooth</string>
+    <string name="nav_title_usb">USB/Dok</string>
+    <string name="nav_drawer_open">Open navigation drawer</string>
+    <string name="nav_drawer_close">Close navigation drawer</string>
+    <!-- 导航栏部分结束 -->
+    <!-- 设置部分开始 -->
+    <string name="settings_save_preset">Save preset</string>
+    <string name="settings_load_preset">Load preset</string>
+    <string name="settings_help">Help</string>
+    <!-- 设置部分结束 -->
+
+    <!-- 预设加载保存部分开始 -->
+    <string name="create_preset">New preset..</string>
+    <string name="set_preset_name">Set a preset name</string>
+    <string name="name_err">Preset name contains illegal characters</string>
+    <string name="space_first_err">Do not set space at first</string>
+    <string name="copy_err">Could not copy %s preset</string>
+    <string name="confirm_overwrite">Overwrite preset</string>
+    <string name="confirm_message">Would you like to overwrite this preset?</string>
+    <string name="load_preset">Load preset..</string>
+    <string name="preset_load_finished">Preset load successfully</string>
+    <string name="preset_save_finished">Preset save successfully</string>
+    <!-- 预设加载保存部分结束 -->
+
+    <!-- 效果总开关 -->
+    <string name="effect_main_title">Main Switch</string>
+    <string name="pref_main_switch_summary_on">Main effect is enabled</string>
+    <string name="pref_main_switch_summary_off">Main effect is disabled</string>
+    <!-- 效果总开关 -->
+    
+    <!-- 动态范围压缩部分开始 -->
+    <string name="compression_title">Dynamic range compression</string>
+    <string name="pref_compression_summary_on">Compression is enabled</string>
+    <string name="pref_compression_summary_off">Compression is disabled</string>
+    <string name="compression_value">Set compression value</string>
+    <!-- 动态范围压缩部分结束 -->
+
+    <!-- 低音增益部分开始 -->
+    <string name="bass_boost_title">Bass boost</string>
+    <string name="pref_bass_boost_summary_on">Bass boost is enabled</string>
+    <string name="pref_bass_boost_summary_off">Bass boost is disabled</string>
+    <string name="pref_bass_boost_freq_point">Set bass boost freq</string>
+    <string name="pref_bass_boost_freq_strength">Set bass boost strength</string>
+    <!-- 低音增益部分结束 -->
+
+    <!-- EQ 部分开始 -->
+    <string name="eq_title">Equalizer</string>
     <string name="pref_equalizer_summary_on">Equalizer is enabled</string>
     <string name="pref_equalizer_summary_off">Equalizer is disabled</string>
-    <string name="pref_equalizer_enable">Enable</string>
-    <string name="pref_equalizer_preset_title">Select preset</string>
-    <string name="pref_equalizer_loudness_title">Loudness compensation</string>
-    <string name="pref_bassboost_title">Bass boost</string>
-    <string name="pref_bassboost_summary_on">Bass boost is enabled</string>
-    <string name="pref_bassboost_summary_off">Bass boost is disabled</string>
-    <string name="pref_bassboost_enable">Enable</string>
-    <string name="pref_bassboost_freq">Set bassboost freq</string>
-    <string name="pref_bassboost_freq_title">Bassboost Freq</string>
-    <string name="pref_headset_virtual_title">Headset Virtual Room Effect</string>
-    <string name="pref_headset_virtual_summary_on">Headset virtual room is enabled</string>
-    <string name="pref_headset_virtual_summary_off">Headset virtual room is disabled</string>
-    <string name="pref_headset_virtual_enable">Enable</string>
-    <string name="pref_room_title">Select room type</string>
-    <string name="dialog_room">Room type</string>
-    <string name="menu_reset">Reset</string>
     <string name="eq_preset_acoustic">Acoustic</string>
     <string name="eq_preset_bass_booster">Bass booster</string>
     <string name="eq_preset_bass_reducer">Bass reducer</string>
@@ -73,11 +67,25 @@
     <string name="eq_preset_treble_reducer">Treble reducer</string>
     <string name="eq_preset_vocal_booster">Vocal booster</string>
     <string name="eq_preset_custom">Custom</string>
+    <string name="pref_equalizer_preset_title">Select preset</string>
+    <string name="pref_equalizer_loudness_title">Loudness compensation</string>
+    <string name="equalizer_loudness_summary_on">Loudness compensation is enabled</string>
+    <string name="equalizer_loudness_summary_off">Loudness compensation is disabled</string>
+    <string name="pref_equalizer_loudness_strength">Set loudness strength</string>
+    <!-- EQ 部分结束 -->
 
-    <string name="save_preset">Save preset</string>
-    <string name="load_preset">Load preset</string>
-    <string name="new_preset">New preset..</string>
+    <!-- 空间混响开始 -->
+    <string name="virtualizer_title">Virtualizer</string>
+    <string name="pref_virtualizer_summary_on">Virtualizer is enabled</string>
+    <string name="pref_virtualizer_summary_off">Virtualizer is disabled</string>
+    <string name="pref_virtualizer_types">Virtualizer types</string>
+    <string name="virtualizer_preset_studio">Studio</string>
+    <string name="virtualizer_preset_room">Room</string>
+    <string name="virtualizer_preset_large_room">Large room</string>
+    <string name="virtualizer_preset_stage">Stage</string>
+    <!-- 空间混响结束 -->
 
+    <!-- 帮助部分 -->
     <string name="help_title">Help</string>
     <string name="help_text"><b>What is DSP Manager?</b>
 \n\n
@@ -159,12 +167,4 @@ enabled whenever using stereo headsets.
 Because the mixing reduces the stereo separation somewhat, there is a
 Haas effect reverb, which can be used to increase the perceived stereo image
 width. This is controlled by the \'Room type\' control.</string>
-
-
-    <!-- Drawer -->
-    <string name="navigation_drawer_toggle">Toggle Drawer</string>
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
-    <string name="navigation_toggle_drawer">Switch to Drawer</string>
-    <string name="navigation_toggle_tabbed">Switch to Tabbed</string>
 </resources>

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <SwitchPreference
+        android:title="@string/effect_main_title"
+        android:icon="@drawable/ic_power"
+        android:key="dsp.speaker.main.switch"
+        android:summaryOn="@string/pref_main_switch_summary_on"
+        android:summaryOff="@string/pref_main_switch_summary_off"/>
+
+    <SwitchPreference
+        android:key="dsp.speaker.bass.boost.enable"
+        android:title="@string/bass_boost_title"
+        android:summaryOn="@string/pref_bass_boost_summary_on"
+        android:summaryOff="@string/pref_bass_boost_summary_off"/>
+    <com.cyanogenmod.dspmanager.ui.CustomSeekBarPreference
+        android:key="dsp.speaker.bass.boost.freq.point"
+        android:title="@string/pref_bass_boost_freq_point"
+        app:min="20"
+        android:max="200"
+        android:defaultValue="20"
+        app:updatesContinuously="true"
+        />
+    <com.cyanogenmod.dspmanager.ui.CustomSeekBarPreference
+        android:key="dsp.speaker.bass.boost.freq.strength"
+        android:title="@string/pref_bass_boost_freq_strength"
+        app:min="0"
+        android:max="100"
+        android:defaultValue="0"
+        app:updatesContinuously="true"/>
+
+    <SwitchPreference
+        android:icon="@drawable/ic_eq"
+        android:key="dsp.speaker.tone.eq.enable"
+        android:summaryOff="@string/pref_equalizer_summary_off"
+        android:summaryOn="@string/pref_equalizer_summary_on"
+        android:title="@string/eq_title" />
+    <com.cyanogenmod.dspmanager.ui.SummarisedListPreference
+        android:key="dsp.speaker.tone.eq.presets"
+        android:title="@string/pref_equalizer_preset_title"
+        android:dialogTitle="@string/pref_equalizer_preset_title"
+        android:entries="@array/eq_preset_mode"
+        android:entryValues="@array/eq_preset_value"
+        app:iconSpaceReserved="false"
+        android:defaultValue="0.0;0.0;0.0;0.0;0.0;0.0"
+        />
+    <com.cyanogenmod.dspmanager.ui.EQDialogPreference
+        android:key="dsp.speaker.tone.eq.values"
+        android:defaultValue="0.0;0.0;0.0;0.0;0.0;0.0"
+        android:dialogLayout="@layout/surfaceview_equalizer_popup"
+        android:layout="@layout/surfaceview_equalizer" />
+</PreferenceScreen>
